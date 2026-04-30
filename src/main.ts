@@ -10,7 +10,9 @@ async function bootstrap() {
     .setTitle('Task Flow API')
     .setDescription('API for managing tasks and projects')
     .setVersion('1.0.0')
+    .addBearerAuth()
     .addTag('App', 'Operations related to app')
+    .addTag('Auth', 'Operations related to the authentication')
     .addTag('Users', 'Operations related to users')
     .build();
 
@@ -27,4 +29,5 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
   await app.listen(process.env.PORT ?? 3000);
 }
+
 bootstrap();
