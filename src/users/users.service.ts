@@ -67,7 +67,7 @@ export class UsersService {
             user.displayName = updateMeDto.displayName;
         }
         if (updateMeDto.newPassword) {
-            user.password = updateMeDto.newPassword;
+            user.password = await bcrypt.hash(updateMeDto.newPassword, 10);
         }
         const updatedUser = await this.usersRepository.save(user);
         return this.toResponseDto(updatedUser);
