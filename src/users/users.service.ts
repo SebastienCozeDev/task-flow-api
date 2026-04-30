@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -14,20 +14,30 @@ export class UsersService {
         private readonly usersRepository: Repository<User>,
     ) {}
 
+    private toResponseDto(user: User): UserResponseDto {
+        return new UserResponseDto({
+            id: user.id,
+            displayName: user.displayName,
+            email: user.email,
+        });
+    }
+
     async findAll(): Promise<UserResponseDto[]> {
         const users = await this.usersRepository.find();
         return users.map(
-            (user: User) =>
-                new UserResponseDto({
-                    id: user.id,
-                    displayName: user.displayName,
-                    email: user.email,
-                })
+            (user: User) => this.toResponseDto(user)
         );
     }
 
-    async findByEmail(email: string): Promise<User | null> {
+    findByEmail(email: string): Promise<User | null> {
         return this.usersRepository.findOneBy({ email });
+    }
+
+    async findMe(userId: string): Promise<UserResponseDto> {
+        const user = await this.usersRepository.findOneBy({ id: userId });
+        if (!user)
+            throw new NotFoundException("User not found");
+        return this.toResponseDto(user);
     }
 
     async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
@@ -42,10 +52,6 @@ export class UsersService {
             password: hashedPassword,
         });
         const savedUser = await this.usersRepository.save(user);
-        return new UserResponseDto({
-            id: savedUser.id,
-            displayName: savedUser.displayName,
-            email: savedUser.email,
-        });
+        return this.toResponseDto(savedUser);
     }
 }

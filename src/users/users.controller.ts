@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { Body, Controller, Get, Post, Patch, Request, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiTags, ApiOperation } from "@nestjs/swagger";
+import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user..dto";
 
@@ -18,5 +19,13 @@ export class UsersController {
     @ApiOperation({ summary: 'Create a new user' })
     create(@Body() createUserDto: CreateUserDto) {
         return this.usersService.create(createUserDto);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('me')
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Retrieve the current user' })
+    getMe(@Request() req: any) {
+        return this.usersService.findMe(req.user.userId);
     }
 }
