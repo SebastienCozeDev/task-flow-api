@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Patch, Request, UseGuards, Query } from "@
 import { ApiBearerAuth, ApiTags, ApiOperation } from "@nestjs/swagger";
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from "./users.service";
-import { CreateUserDto } from "./dto/create-user..dto";
+import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateMeDto } from "./dto/update-me.dto";
 import { RolesGuard } from "src/auth/roles.guard";
 import { Roles } from "src/auth/roles.decorator";

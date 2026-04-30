@@ -13,6 +13,7 @@ async function bootstrap() {
     .addBearerAuth()
     .addTag('App', 'Operations related to app')
     .addTag('Auth', 'Operations related to the authentication')
+    .addTag('Boards', 'Operations related to boards')
     .addTag('Users', 'Operations related to users')
     .build();
 
