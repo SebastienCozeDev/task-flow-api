@@ -6,6 +6,7 @@ import { CreateUserDto } from "./dto/create-user..dto";
 import { User } from './entities/user.entity';
 import { UserResponseDto } from "./dto/user-response.dto";
 import { UpdateMeDto } from "./dto/update-me.dto";
+import { FindUsersQueryDto } from "./dto/find-users-query.dto";
 
 
 @Injectable()
@@ -27,8 +28,10 @@ export class UsersService {
         return await bcrypt.compare(password, user.password);
     }
 
-    async findAll(): Promise<UserResponseDto[]> {
-        const users = await this.usersRepository.find();
+    async findAll(query: FindUsersQueryDto): Promise<UserResponseDto[]> {
+        const users = await this.usersRepository.find({
+            where: query.role ? { role: query.role } : {},
+        });
         return users.map(
             (user: User) => this.toResponseDto(user)
         );
