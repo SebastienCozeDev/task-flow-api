@@ -12,7 +12,10 @@ import { Roles } from "src/auth/roles.decorator";
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles('admin')
     @Get()
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Retrieve all users' })
     findAll() {
         return this.usersService.findAll();
