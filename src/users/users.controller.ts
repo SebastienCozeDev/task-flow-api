@@ -3,6 +3,7 @@ import { ApiBearerAuth, ApiTags, ApiOperation } from "@nestjs/swagger";
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user..dto";
+import { UpdateMeDto } from "./dto/update-me.dto";
 
 @ApiTags('Users')
 @Controller("users")
@@ -27,5 +28,13 @@ export class UsersController {
     @ApiOperation({ summary: 'Retrieve the current user' })
     getMe(@Request() req: any) {
         return this.usersService.findMe(req.user.userId);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Patch('me')
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Update the current user' })
+    updateMe(@Request() req: any, @Body() updateMeDto: UpdateMeDto) {
+        return this.usersService.updateMe(req.user.userId, updateMeDto);
     }
 }

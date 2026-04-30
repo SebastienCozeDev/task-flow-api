@@ -1,10 +1,11 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from "./dto/create-user..dto";
 import { User } from './entities/user.entity';
 import { UserResponseDto } from "./dto/user-response.dto";
+import { UpdateMeDto } from "./dto/update-me.dto";
 
 
 @Injectable()
@@ -20,6 +21,10 @@ export class UsersService {
             displayName: user.displayName,
             email: user.email,
         });
+    }
+
+    async checkPassword(user: User, password: string) {
+        return await bcrypt.compare(password, user.password);
     }
 
     async findAll(): Promise<UserResponseDto[]> {
@@ -38,6 +43,31 @@ export class UsersService {
         if (!user)
             throw new NotFoundException("User not found");
         return this.toResponseDto(user);
+    }
+
+    async updateMe(userId: string, updateMeDto: UpdateMeDto): Promise<UserResponseDto> {
+        const user = await this.usersRepository.findOneBy({ id: userId });
+        if (!user)
+            throw new NotFoundException("User not found");
+        if (!this.checkPassword(user, updateMeDto.password))
+            throw new UnauthorizedException("Authorized");
+        if (updateMeDto.email && updateMeDto.email !== user.email) {
+            const existingUser = await this.usersRepository.findOneBy({
+                email: updateMeDto.email,
+            });
+            if (existingUser) {
+                throw new ConflictException("Email already exists");
+            }
+            user.email = updateMeDto.email;
+        }
+        if (updateMeDto.displayName) {
+            user.displayName = updateMeDto.displayName;
+        }
+        if (updateMeDto.newPassword) {
+            user.password = updateMeDto.newPassword;
+        }
+        const updatedUser = await this.usersRepository.save(user);
+        return this.toResponseDto(updatedUser);
     }
 
     async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
