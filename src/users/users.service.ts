@@ -1,32 +1,47 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from "./dto/create-user..dto";
+import { User } from './entities/user.entity';
+import { UserResponseDto } from "./dto/user-response.dto";
+
 
 @Injectable()
 export class UsersService {
-    private users = [
-        {
-            id: 1,
-            displayName: "John Doe",
-            email: "john.doe@example.com"
-        },
-        {
-            id: 2,
-            displayName: "Jane Smith",
-            email: "jane.smith@example.com"
-        }
-    ];
+    constructor(
+        @InjectRepository(User)
+        private readonly usersRepository: Repository<User>,
+    ) {}
 
-    findAll() {
-        return this.users;
+    async findAll(): Promise<UserResponseDto[]> {
+        const users = await this.usersRepository.find();
+        return users.map(
+            (user: User) =>
+                new UserResponseDto({
+                    id: user.id,
+                    displayName: user.displayName,
+                    email: user.email,
+                })
+        );
     }
 
-    create(createUserDto: CreateUserDto) {
-        const newUser = {
-            id: this.users.length + 1,
-            displayName: createUserDto.displayName,
+    async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+        const existingUser = await this.usersRepository.findOneBy({
             email: createUserDto.email,
-        };
-        this.users.push(newUser);
-        return newUser;
+        });
+        if (existingUser)
+            throw new ConflictException("Email already exists");
+        const hashedPassword = await bcrypt.hash(createUserDto.password, 10)
+        const user = this.usersRepository.create({
+            ...createUserDto,
+            password: hashedPassword,
+        });
+        const savedUser = await this.usersRepository.save(user);
+        return new UserResponseDto({
+            id: savedUser.id,
+            displayName: savedUser.displayName,
+            email: savedUser.email,
+        });
     }
 }
