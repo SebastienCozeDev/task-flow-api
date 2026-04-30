@@ -10,6 +10,7 @@ async function bootstrap() {
     .setTitle('Task Flow API')
     .setDescription('API for managing tasks and projects')
     .setVersion('1.0.0')
+    .addTag('App', 'Operations related to app')
     .addTag('Users', 'Operations related to users')
     .build();
 
