@@ -4,6 +4,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user..dto";
 import { UpdateMeDto } from "./dto/update-me.dto";
+import { RolesGuard } from "src/auth/roles.guard";
+import { Roles } from "src/auth/roles.decorator";
 
 @ApiTags('Users')
 @Controller("users")
@@ -16,7 +18,10 @@ export class UsersController {
         return this.usersService.findAll();
     }
 
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles('admin')
     @Post()
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Create a new user' })
     create(@Body() createUserDto: CreateUserDto) {
         return this.usersService.create(createUserDto);
