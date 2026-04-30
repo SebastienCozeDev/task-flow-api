@@ -85,3 +85,6 @@ else
 	$(DOCKER_COMPOSE_CMD) --profile $(PROFILE) logs -f
 endif
 endif
+
+db:
+	docker compose exec postgres psql -U $(DB_USERNAME) -d $(DB_NAME)
