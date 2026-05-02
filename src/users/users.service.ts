@@ -37,12 +37,18 @@ export class UsersService {
         );
     }
 
-    findByEmail(email: string): Promise<User | null> {
-        return this.usersRepository.findOneBy({ email });
+    async findByEmail(email: string): Promise<User> {
+        const user = await this.usersRepository.findOneBy({ email });
+        if (!user)
+            throw new NotFoundException("User not found");
+        return user;
     }
 
-    findById(id: string): Promise<User | null> {
-        return this.usersRepository.findOneBy({ id });
+    async findById(id: string): Promise<User> {
+        const user = await this.usersRepository.findOneBy({ id });
+        if (!user)
+            throw new NotFoundException("User not found");
+        return user;
     }
 
     async findMe(userId: string): Promise<UserResponseDto> {
@@ -53,11 +59,9 @@ export class UsersService {
     }
 
     async updateMe(userId: string, updateMeDto: UpdateMeDto): Promise<UserResponseDto> {
-        const user = await this.usersRepository.findOneBy({ id: userId });
-        if (!user)
-            throw new NotFoundException("User not found");
+        const user = await this.findById(userId);
         if (!this.checkPassword(user, updateMeDto.password))
-            throw new UnauthorizedException("Authorized");
+            throw new UnauthorizedException("Invalid password");
         if (updateMeDto.email && updateMeDto.email !== user.email) {
             const existingUser = await this.usersRepository.findOneBy({
                 email: updateMeDto.email,
