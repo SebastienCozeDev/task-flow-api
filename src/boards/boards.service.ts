@@ -24,6 +24,13 @@ export class BoardsService {
         });
     }
 
+    async findAll(): Promise<BoardResponseDto[]> {
+        const boards = await this.boardsRepository.find();
+        return boards.map(
+            (board: Board) => this.toResponseDto(board)
+        )
+    }
+
     async findByOwnerId(ownerId: string): Promise<BoardResponseDto[]> {
         const boards = await this.boardsRepository.find({
             where: { ownerId: ownerId },
