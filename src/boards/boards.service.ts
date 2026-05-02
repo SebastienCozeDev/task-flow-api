@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Board } from "./entities/board.entity";
@@ -6,6 +6,10 @@ import { CreateBoardDto } from "./dto/create-board.dto";
 import { BoardResponseDto } from "./dto/board-response.dto";
 import { UsersService } from "src/users/users.service";
 import { UpdateBoardDto } from "./dto/update-board.dto";
+import { DeleteBoardDto } from "./dto/delete-board.dto";
+import { BoardDeletionResponseDto } from "./dto/board-deletion-response.dto";
+import { User } from "src/users/entities/user.entity";
+import { BoardDetailResponseDto } from "./dto/board-detail-response.dto";
 
 
 @Injectable()
@@ -18,10 +22,31 @@ export class BoardsService {
 
     private toResponseDto(board: Board): BoardResponseDto {
         return new BoardResponseDto({
+            id: board.id,
             title: board.title,
             description: board.description,
-            owner: board.owner,
+            ownerId: board.ownerId,
         });
+    }
+
+    private toResponseDetailDto(board: Board): BoardDetailResponseDto {
+        return new BoardDetailResponseDto({
+            title: board.title,
+            description: board.description,
+            owner: this.usersService.toResponseDto(board.owner),
+        });
+    }
+
+    private hasRightToRead(board: Board, userId: string): boolean {
+        return this.hasRightToUpdate(board, userId);
+    }
+
+    private hasRightToUpdate(board: Board, userId: string): boolean {
+        return this.hasRightToDelete(board, userId);
+    }
+
+    private hasRightToDelete(board: Board, userId: string): boolean {
+        return board.ownerId === userId;
     }
 
     async findAll(): Promise<BoardResponseDto[]> {
@@ -33,7 +58,7 @@ export class BoardsService {
 
     async findByOwnerId(ownerId: string): Promise<BoardResponseDto[]> {
         const boards = await this.boardsRepository.find({
-            where: { ownerId: ownerId },
+            where: { ownerId },
         });
         return boards.map(
             (board: Board) => this.toResponseDto(board)
@@ -45,6 +70,18 @@ export class BoardsService {
         if (!board)
             throw new NotFoundException("Board not found");
         return board;
+    }
+
+    async findByIdWithDetail(id: string, userId?: string): Promise<BoardDetailResponseDto> {
+        const board = await this.boardsRepository.findOne({
+            where: { id },
+            relations: ['owner'],
+        });
+        if (!board)
+            throw new NotFoundException("Board not found");
+        if (userId && !this.hasRightToRead(board, userId))
+            throw new UnauthorizedException("Unauthorized");
+        return this.toResponseDetailDto(board);
     }
 
     async create(userId: string, createBoardDto: CreateBoardDto): Promise<BoardResponseDto> {
@@ -59,11 +96,19 @@ export class BoardsService {
         return this.toResponseDto(savedBoard);
     }
 
-    async update(userId: string, updateBoardDto: UpdateBoardDto): Promise<BoardResponseDto> {
+    async updateByUser(userId: string, updateBoardDto: UpdateBoardDto): Promise<BoardResponseDto> {
         const user = await this.usersService.findById(userId);
         const board = await this.findById(updateBoardDto.id);
-        if (user.id != board.ownerId)
+        if (!this.hasRightToUpdate(board, userId))
             throw new ForbiddenException("You can only update your boards");
+        return this.update(userId, updateBoardDto, user, board);
+    }
+
+    async update(userId: string, updateBoardDto: UpdateBoardDto, user?: User, board?: Board): Promise<BoardResponseDto> {
+        if (!user)
+            user = await this.usersService.findById(userId);
+        if (!board)
+            board = await this.findById(updateBoardDto.id);
         if (updateBoardDto.ownerId && !updateBoardDto.password)
             throw new ForbiddenException("You can't transfert this board without password");
         if (updateBoardDto.password && !this.usersService.checkPassword(user, updateBoardDto.password))
@@ -78,20 +123,27 @@ export class BoardsService {
         return this.toResponseDto(updatedBoard);
     }
 
-    async updateByAdmin(userId: string, updateBoardDto: UpdateBoardDto): Promise<BoardResponseDto> {
+    async deleteByUser(userId: string, deleteBoardDto: DeleteBoardDto): Promise<BoardDeletionResponseDto> {
         const user = await this.usersService.findById(userId);
-        const board = await this.findById(updateBoardDto.id);
-        if (updateBoardDto.ownerId && !updateBoardDto.password)
-            throw new ForbiddenException("You can't transfert this board without password");
-        if (updateBoardDto.password && !this.usersService.checkPassword(user, updateBoardDto.password))
+        const board = await this.findById(deleteBoardDto.id);
+        if (this.hasRightToDelete(board, userId))
+            throw new ForbiddenException("You can only delete your boards");
+        return this.delete(userId, deleteBoardDto, user, board);
+    }
+
+    async delete(userId: string, deleteBoardDto: DeleteBoardDto, user?: User, board?: Board): Promise<BoardDeletionResponseDto> {
+        if (!user)
+            user = await this.usersService.findById(userId);
+        if (!board)
+            board = await this.findById(deleteBoardDto.id);
+        if (!this.usersService.checkPassword(user, deleteBoardDto.password))
             throw new ForbiddenException("Invalid password");
-        if (updateBoardDto.ownerId)
-            board.ownerId = updateBoardDto.ownerId;
-        if (updateBoardDto.title)
-            board.title = updateBoardDto.title;
-        if (updateBoardDto.description)
-            board.description = updateBoardDto.description;
-        const updatedBoard = await this.boardsRepository.save(board);
-        return this.toResponseDto(updatedBoard);
+        if (!deleteBoardDto.permanently)
+            await this.boardsRepository.softDelete(board.id);
+        else
+            await this.boardsRepository.delete(board.id);
+        return new BoardDeletionResponseDto({
+            message: `"${board.title}" (ID: ${board.id}) has been successfully deleted ${deleteBoardDto.permanently ? 'with' : 'without'} permanently method`,
+        });
     }
 }

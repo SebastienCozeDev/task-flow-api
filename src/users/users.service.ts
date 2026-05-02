@@ -16,7 +16,7 @@ export class UsersService {
         private readonly usersRepository: Repository<User>,
     ) {}
 
-    private toResponseDto(user: User): UserResponseDto {
+    toResponseDto(user: User): UserResponseDto {
         return new UserResponseDto({
             id: user.id,
             displayName: user.displayName,

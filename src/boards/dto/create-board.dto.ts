@@ -1,5 +1,5 @@
 import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 
 export class CreateBoardDto {
@@ -9,7 +9,7 @@ export class CreateBoardDto {
     @MaxLength(120)
     title: string;
 
-    @ApiProperty({ example: 'My Super Description', description: 'The description of the board' })
+    @ApiPropertyOptional({ example: 'My Super Description', description: 'The description of the board' })
     @IsString()
     @IsOptional()
     @MinLength(3)

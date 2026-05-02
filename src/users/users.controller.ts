@@ -17,7 +17,7 @@ export class UsersController {
     @Roles('admin')
     @Get()
     @ApiBearerAuth()
-    @ApiOperation({ summary: 'Retrieve all users' })
+    @ApiOperation({ summary: 'Retrieve all users with admin privilege' })
     findAll(@Query() query: FindUsersQueryDto) {
         return this.usersService.findAll(query);
     }
@@ -26,7 +26,7 @@ export class UsersController {
     @Roles('admin')
     @Post()
     @ApiBearerAuth()
-    @ApiOperation({ summary: 'Create a new user' })
+    @ApiOperation({ summary: 'Create a new user with admin privilege' })
     create(@Body() createUserDto: CreateUserDto) {
         return this.usersService.create(createUserDto);
     }
