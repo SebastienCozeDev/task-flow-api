@@ -3,10 +3,6 @@ import { IsString } from 'class-validator';
 
 
 export class BoardMemberResponseDto {
-    @ApiProperty({ example: '1c0c8c84-2f3f-4115-be91-54b2837ca3e6', description: 'The ID of the relation' })
-    @IsString()
-    id: string;
-
     @ApiProperty({ example: '1c0c8c84-2f3f-4115-be91-54b2837ca3e6', description: 'The ID of the board' })
     @IsString()
     boardId: string;
