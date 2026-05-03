@@ -2,14 +2,14 @@ import { ForbiddenException, Injectable, NotFoundException, UnauthorizedExceptio
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Board } from "./entities/board.entity";
-import { CreateBoardDto } from "./dto/create-board.dto";
-import { BoardResponseDto } from "./dto/board-response.dto";
+import { CreateBoardDto } from "./dto/board/create-board.dto";
+import { BoardResponseDto } from "./dto/board/board-response.dto";
 import { UsersService } from "src/users/users.service";
-import { UpdateBoardDto } from "./dto/update-board.dto";
-import { DeleteBoardDto } from "./dto/delete-board.dto";
-import { BoardDeletionResponseDto } from "./dto/board-deletion-response.dto";
+import { UpdateBoardDto } from "./dto/board/update-board.dto";
+import { DeleteBoardDto } from "./dto/board/delete-board.dto";
+import { BoardDeletionResponseDto } from "./dto/board/board-deletion-response.dto";
 import { User } from "src/users/entities/user.entity";
-import { BoardDetailResponseDto } from "./dto/board-detail-response.dto";
+import { BoardDetailResponseDto } from "./dto/board/board-detail-response.dto";
 
 
 @Injectable()

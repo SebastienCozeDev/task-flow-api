@@ -2,10 +2,10 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards }
 import { ApiBearerAuth, ApiTags, ApiOperation } from "@nestjs/swagger";
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from "src/auth/roles.decorator";
-import { CreateBoardDto } from "./dto/create-board.dto";
+import { CreateBoardDto } from "./dto/board/create-board.dto";
 import { BoardsService } from "./boards.service";
-import { UpdateBoardDto } from "./dto/update-board.dto";
-import { DeleteBoardDto } from "./dto/delete-board.dto";
+import { UpdateBoardDto } from "./dto/board/update-board.dto";
+import { DeleteBoardDto } from "./dto/board/delete-board.dto";
 import { RolesGuard } from "src/auth/roles.guard";
 
 @ApiTags('Boards')
