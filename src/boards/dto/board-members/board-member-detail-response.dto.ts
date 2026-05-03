@@ -5,10 +5,6 @@ import { BoardResponseDto } from '../board/board-response.dto';
 
 
 export class BoardMemberDetailResponseDto {
-    @ApiProperty({ example: '1c0c8c84-2f3f-4115-be91-54b2837ca3e6', description: 'The ID of the board' })
-    @IsString()
-    board: BoardResponseDto;
-
     @ApiProperty({ example: '1c0c8c84-2f3f-4115-be91-54b2837ca3e6', description: 'The ID of the invited user' })
     @IsString()
     user: UserResponseDto;
