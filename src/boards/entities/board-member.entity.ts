@@ -22,7 +22,7 @@ export enum BoardMemberRole {
 
 @Entity()
 @Unique('UQ_board_member_user_board', ['userId', 'boardId'])
-export class Board {
+export class BoardMember {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
