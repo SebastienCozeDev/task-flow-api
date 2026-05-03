@@ -29,7 +29,7 @@ export class BoardsService {
         });
     }
 
-    private toResponseDetailDto(board: Board): BoardDetailResponseDto {
+    private toDetailResponseDto(board: Board): BoardDetailResponseDto {
         return new BoardDetailResponseDto({
             title: board.title,
             description: board.description,
@@ -81,7 +81,7 @@ export class BoardsService {
             throw new NotFoundException("Board not found");
         if (userId && !this.hasRightToRead(board, userId))
             throw new UnauthorizedException("Unauthorized");
-        return this.toResponseDetailDto(board);
+        return this.toDetailResponseDto(board);
     }
 
     async create(userId: string, createBoardDto: CreateBoardDto): Promise<BoardResponseDto> {
