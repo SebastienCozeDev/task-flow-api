@@ -20,7 +20,7 @@ export class BoardsService {
         private readonly usersService: UsersService,
     ) {}
 
-    private toResponseDto(board: Board): BoardResponseDto {
+    toResponseDto(board: Board): BoardResponseDto {
         return new BoardResponseDto({
             id: board.id,
             title: board.title,
