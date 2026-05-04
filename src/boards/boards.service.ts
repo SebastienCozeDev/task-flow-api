@@ -98,8 +98,8 @@ export class BoardsService {
             throw new ForbiddenException("You can't transfert this board without password");
         if (updateBoardDto.password && !this.usersService.checkPassword(user, updateBoardDto.password))
             throw new ForbiddenException("Invalid password");
-        if (updateBoardDto.ownerId) // TODO: Remove ownerId everywhere to replace by role
-            board.ownerId = updateBoardDto.ownerId;
+        if (updateBoardDto.ownerId)
+            throw new ForbiddenException("You can't transfert this board now (unimplemented feature)");
         if (updateBoardDto.title)
             board.title = updateBoardDto.title;
         if (updateBoardDto.description)
