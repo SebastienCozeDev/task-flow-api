@@ -122,8 +122,37 @@ export class BoardMembersService {
         })
     }
 
+    async findBoardByMemberId(memberId: string): Promise<BoardDetailResponseDto[]> {
+        const boardMembers = await this.boardMembersRespository.findBy({ userId: memberId });
+        const boardIds = boardMembers.map(bm => bm.boardId);
+        return await Promise.all(
+            boardIds.map(async boardId => {
+                return this.boardsService.toDetailResponseDto(
+                    await this.boardsService.findById(boardId),
+                    await this.findByAllBoardId(boardId),
+                );
+            })
+        );
+    }
+
+    async findBoardByOwnerId(ownerId: string): Promise<BoardDetailResponseDto[]> {
+        const boardMembers = await this.boardMembersRespository.findBy({ userId: memberId });
+        const boardIds = boardMembers
+            .filter(bm => bm.role === BoardMemberRole.OWNER)
+            .map(bm => bm.boardId);
+        return await Promise.all(
+            boardIds.map(async boardId => {
+                return this.boardsService.toDetailResponseDto(
+                    await this.boardsService.findById(boardId),
+                    await this.findByAllBoardId(boardId),
+                );
+            })
+        );
+    }
+
     async createBoard(currentUserId: string, createBoardDto: CreateBoardDto): Promise<BoardResponseDto> {
-        const savedBoard = await this.boardsService.create(currentUserId, createBoardDto);
+        const numberOfBoard = (await this.findBoardByOwnerId(currentUserId)).length;
+        const savedBoard = await this.boardsService.create(currentUserId, createBoardDto, numberOfBoard);
         const boardMember = this.boardMembersRespository.create({
             boardId: savedBoard.id,
             userId: currentUserId,
@@ -131,6 +160,6 @@ export class BoardMembersService {
             invitedById: currentUserId,
         })
         await this.boardMembersRespository.save(boardMember);
-        return savedBoard
+        return savedBoard;
     }
 }

@@ -33,7 +33,7 @@ export class BoardsController {
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Retrieve the boards of the current user' })
     getMe(@Request() req: any) {
-        return this.boardsService.findByOwnerId(req.user.userId);
+        return this.boardMembersService.findBoardByMemberId(req.user.userId);
     }
 
     @UseGuards(AuthGuard('jwt'))

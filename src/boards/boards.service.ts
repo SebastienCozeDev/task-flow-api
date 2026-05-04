@@ -32,7 +32,7 @@ export class BoardsService {
         });
     }
 
-    async toDetailResponseDto(board: Board, members: BoardMemberDetailResponseDto[]): Promise<BoardDetailResponseDto> {
+    toDetailResponseDto(board: Board, members: BoardMemberDetailResponseDto[]): BoardDetailResponseDto {
         return new BoardDetailResponseDto({
             title: board.title,
             description: board.description,
@@ -47,17 +47,6 @@ export class BoardsService {
             (board: Board) => this.toResponseDto(board)
         )
     }
-
-    async findByOwnerId(ownerId: string): Promise<BoardResponseDto[]> {
-        const boards = await this.boardsRepository.find({
-            where: { ownerId },
-        });
-        return boards.map(
-            (board: Board) => this.toResponseDto(board)
-        );
-    }
-
-    // TODO: Add method to find all boards where current user is member to replace boards/me endpoint
 
     async findById(id: string): Promise<Board> {
         const board = await this.boardsRepository.findOneBy({ id });
@@ -78,10 +67,10 @@ export class BoardsService {
         return board;
     }
 
-    async create(userId: string, createBoardDto: CreateBoardDto): Promise<BoardResponseDto> {
+    async create(userId: string, createBoardDto: CreateBoardDto, numberOfBoard: number): Promise<BoardResponseDto> {
         const user = await this.usersService.findById(userId);
-        if (user.maxBoard <= (await this.findByOwnerId(userId)).length)
-            throw new ForbiddenException("You can't create more board");
+        if (user.maxBoard <= numberOfBoard)
+            throw new ForbiddenException(`You can't create more board (MAX: ${user.maxBoard}`);
         const board = this.boardsRepository.create({
             ...createBoardDto,
             ownerId: userId,
