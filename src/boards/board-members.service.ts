@@ -13,6 +13,7 @@ import { BoardDetailResponseDto } from "./dto/board/board-detail-response.dto";
 import { DeletionResponseDto } from "./dto/deletion-response.dto";
 import { CreateBoardDto } from "./dto/board/create-board.dto";
 import { BoardResponseDto } from "./dto/board/board-response.dto";
+import { BoardRightsService } from "./board-rights.service";
 
 @Injectable()
 export class BoardMembersService {
@@ -21,6 +22,7 @@ export class BoardMembersService {
         private readonly boardMembersRespository: Repository<BoardMember>,
         private readonly boardsService: BoardsService,
         private readonly usersService: UsersService,
+        private readonly boardRightsService: BoardRightsService,
     ) {}
 
     private toResponseDto(boardMember: BoardMember): BoardMemberResponseDto {
@@ -40,27 +42,6 @@ export class BoardMembersService {
         });
     }
 
-    private async hasRightToInvite(boardId: string, userId: string, boardMember?: BoardMember): Promise<boolean> {
-        if (!boardMember)
-            boardMember = await this.findByBoardAndUserIds(boardId, userId);
-        return (
-            boardMember.role === BoardMemberRole.OWNER
-            || boardMember.role === BoardMemberRole.MAINTENER
-        );
-    }
-
-    private async hasRightToUpdateRole(boardId: string, userId: string, role: BoardMemberRole,): Promise<boolean> {
-        const boardMember = await this.findByBoardAndUserIds(boardId, userId);
-        return (await this.hasRightToInvite(boardId, userId, boardMember)) && (
-            (boardMember.role === BoardMemberRole.OWNER && role in [BoardMemberRole.MAINTENER, BoardMemberRole.EDITOR, BoardMemberRole.READER])
-            || (boardMember.role === BoardMemberRole.OWNER && role in [BoardMemberRole.EDITOR, BoardMemberRole.READER])
-        )
-    }
-
-    private async hasRightToDelete(boardId: string, userId: string, role: BoardMemberRole) {
-        return await this.hasRightToUpdateRole(boardId, userId, role);
-    }
-
     private async findByAllBoardId(boardId: string): Promise<BoardMemberDetailResponseDto[]> {
         const boardMembers = await this.boardMembersRespository.find({
             where: { boardId },
@@ -73,8 +54,8 @@ export class BoardMembersService {
 
     async findByBoardAndUserIdsDetail(boardId: string, userId: string, currentUserId?: string): Promise<BoardMemberDetailResponseDto> {
         const board = await this.boardsService.findById(boardId);
-        if (currentUserId && !this.boardsService.hasRightToRead(board, currentUserId))
-            throw new UnauthorizedException("Unauthorized");
+        if (currentUserId)
+            await this.boardRightsService.hasRightToReadBoard(board, currentUserId);
         const boardMember = await this.boardMembersRespository.findOne({
             where: { boardId, userId },
             relations: ['user', 'invitedBy'],
@@ -86,8 +67,8 @@ export class BoardMembersService {
 
     private async findByBoardAndUserIds(boardId: string, userId: string, currentUserId?: string): Promise<BoardMember> {
         const board = await this.boardsService.findById(boardId);
-        if (currentUserId && !this.boardsService.hasRightToRead(board, currentUserId))
-            throw new UnauthorizedException("Unauthorized");
+        if (currentUserId)
+            await this.boardRightsService.hasRightToReadBoard(board, currentUserId);
         const boardMember = await this.boardMembersRespository.findOne({
             where: { boardId, userId },
             relations: ['user', 'invitedBy'],
@@ -105,12 +86,11 @@ export class BoardMembersService {
 
     async create(createBoardMemberDto: CreateBoardMemberDto, currentUserId: string): Promise<BoardMemberResponseDto> {
         const board = await this.boardsService.findById(createBoardMemberDto.boardId);
-        if (!await this.hasRightToInvite(board.id, currentUserId))
-            throw new UnauthorizedException("Unauthorized");
-        const invitedUser = this.usersService.findByEmail(createBoardMemberDto.email);
+        const invitedUser = await this.usersService.findByEmail(createBoardMemberDto.email);
+        await this.boardRightsService.hasRightToInviteMemberInBoard(board, currentUserId, invitedUser.id);
         const boardMember = this.boardMembersRespository.create({
             boardId: createBoardMemberDto.boardId,
-            userId: (await invitedUser).id,
+            userId: invitedUser.id,
             invitedById: currentUserId,
         });
         const savedBoardMember = await this.boardMembersRespository.save(boardMember);
@@ -119,19 +99,24 @@ export class BoardMembersService {
 
     async update(updateBoardMemberDto: UpdateBoardMemberDto, currentUserId?: string): Promise<BoardMemberResponseDto> {
         const board = await this.boardsService.findById(updateBoardMemberDto.boardId);
-        if (currentUserId && !this.hasRightToUpdateRole(board.id, currentUserId, updateBoardMemberDto.role))
-            throw new UnauthorizedException("Unauthorized");
-        const boardMember = await this.findByBoardAndUserIds(updateBoardMemberDto.boardId, updateBoardMemberDto.userId);
+        let boardMember: BoardMember;
+        if (currentUserId)
+            boardMember = (await this.boardRightsService.hasRightToUpdateMemberRoleInBoard(board, currentUserId, updateBoardMemberDto.userId, updateBoardMemberDto.role))[1];
+        else
+            boardMember = await this.findByBoardAndUserIds(updateBoardMemberDto.boardId, updateBoardMemberDto.userId);
         boardMember.role = updateBoardMemberDto.role;
         const updatedBoardMember = await this.boardMembersRespository.save(boardMember);
         return this.toResponseDto(updatedBoardMember);
     }
 
     async delete(boardId: string, userId: string, currentUserId?: string): Promise<DeletionResponseDto> {
-        const boardMember = await this.findByBoardAndUserIds(boardId, userId);
-        if (!currentUserId && !(await this.hasRightToDelete(boardId, userId, boardMember.role)))
-            throw new UnauthorizedException("Unauthorized");
-        this.boardMembersRespository.delete(boardMember.id);
+        const board = await this.boardsService.findById(boardId);
+        let kickedMember: BoardMember;
+        if (currentUserId)
+            kickedMember = (await this.boardRightsService.hasRightToKickMemberInBoard(board, currentUserId, userId))[1]
+        else
+            kickedMember = await this.findByBoardAndUserIds(boardId, userId);
+        this.boardMembersRespository.delete(kickedMember.id);
         return new DeletionResponseDto({
             message: `(ID: ${userId}) has benn successfully deleted from (ID: ${boardId})`,
         })
