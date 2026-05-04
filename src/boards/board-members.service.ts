@@ -136,7 +136,7 @@ export class BoardMembersService {
     }
 
     async findBoardByOwnerId(ownerId: string): Promise<BoardDetailResponseDto[]> {
-        const boardMembers = await this.boardMembersRespository.findBy({ userId: memberId });
+        const boardMembers = await this.boardMembersRespository.findBy({ userId: ownerId });
         const boardIds = boardMembers
             .filter(bm => bm.role === BoardMemberRole.OWNER)
             .map(bm => bm.boardId);
