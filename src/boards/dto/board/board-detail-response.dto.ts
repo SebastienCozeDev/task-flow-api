@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 import { UserResponseDto } from 'src/users/dto/user-response.dto';
+import { BoardMemberResponseDto } from '../board-members/board-member-response.dto';
 
 
 export class BoardDetailResponseDto {
@@ -17,8 +18,10 @@ export class BoardDetailResponseDto {
     description?: string;
 
     @ApiProperty({ description: 'The owner of the board' })
-    @IsString()
     owner: UserResponseDto;
+
+    @ApiProperty({ description: 'The members of the board' })
+    members: BoardMemberResponseDto[];
 
     constructor(partial: Partial<BoardDetailResponseDto>) {
         Object.assign(this, partial);

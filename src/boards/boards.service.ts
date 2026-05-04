@@ -7,9 +7,10 @@ import { BoardResponseDto } from "./dto/board/board-response.dto";
 import { UsersService } from "src/users/users.service";
 import { UpdateBoardDto } from "./dto/board/update-board.dto";
 import { DeleteBoardDto } from "./dto/board/delete-board.dto";
-import { BoardDeletionResponseDto } from "./dto/board/board-deletion-response.dto";
+import { DeletionResponseDto } from "./dto/deletion-response.dto";
 import { User } from "src/users/entities/user.entity";
 import { BoardDetailResponseDto } from "./dto/board/board-detail-response.dto";
+import { BoardMemberResponseDto } from "./dto/board-members/board-member-response.dto";
 
 
 @Injectable()
@@ -29,11 +30,12 @@ export class BoardsService {
         });
     }
 
-    private toDetailResponseDto(board: Board): BoardDetailResponseDto {
+    async toDetailResponseDto(board: Board, members: BoardMemberResponseDto[]): Promise<BoardDetailResponseDto> {
         return new BoardDetailResponseDto({
             title: board.title,
             description: board.description,
             owner: this.usersService.toResponseDto(board.owner),
+            members: members,
         });
     }
 
@@ -76,7 +78,7 @@ export class BoardsService {
         return board;
     }
 
-    async findByIdWithDetail(id: string, userId?: string): Promise<BoardDetailResponseDto> {
+    async findByIdWithOwnerRelation(id: string, userId?: string): Promise<Board> {
         const board = await this.boardsRepository.findOne({
             where: { id },
             relations: ['owner'],
@@ -85,7 +87,7 @@ export class BoardsService {
             throw new NotFoundException("Board not found");
         if (userId && !this.hasRightToRead(board, userId))
             throw new UnauthorizedException("Unauthorized");
-        return this.toDetailResponseDto(board);
+        return board;
     }
 
     async create(userId: string, createBoardDto: CreateBoardDto): Promise<BoardResponseDto> {
@@ -136,7 +138,7 @@ export class BoardsService {
         return this.delete(userId, deleteBoardDto, user, board);
     }
 
-    async delete(userId: string, deleteBoardDto: DeleteBoardDto, user?: User, board?: Board): Promise<BoardDeletionResponseDto> {
+    async delete(userId: string, deleteBoardDto: DeleteBoardDto, user?: User, board?: Board): Promise<DeletionResponseDto> {
         if (!user)
             user = await this.usersService.findById(userId);
         if (!board)
@@ -147,7 +149,7 @@ export class BoardsService {
             await this.boardsRepository.softDelete(board.id);
         else
             await this.boardsRepository.delete(board.id);
-        return new BoardDeletionResponseDto({
+        return new DeletionResponseDto({
             message: `"${board.title}" (ID: ${board.id}) has been successfully deleted ${deleteBoardDto.permanently ? 'with' : 'without'} permanently method`,
         });
     }

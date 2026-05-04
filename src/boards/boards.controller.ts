@@ -15,7 +15,7 @@ export class BoardsController {
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles('admin')
-    @Get()
+    @Get('force')
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Retrieve all boards with admin privilege' })
     findAll() {
@@ -23,28 +23,11 @@ export class BoardsController {
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('me')
+    @Get()
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Retrieve the boards of the current user' })
     getMe(@Request() req: any) {
         return this.boardsService.findByOwnerId(req.user.userId);
-    }
-
-    @UseGuards(AuthGuard('jwt'))
-    @Get('me/:id')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Retrieve a specific board of the current user by ID' })
-    getMeDetail(@Request() req: any, @Param('id') id: string) {
-        return this.boardsService.findByIdWithDetail(id, req.user.userId);
-    }
-
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('admin')
-    @Get(':id')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Retrieve a specific board by ID with admin privilege' })
-    findById(@Request() req: any, @Param('id') id: string) {
-        return this.boardsService.findByIdWithDetail(id);
     }
 
     @UseGuards(AuthGuard('jwt'))
