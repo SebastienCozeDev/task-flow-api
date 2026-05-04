@@ -101,9 +101,9 @@ export class BoardMembersService {
         return await this.boardsService.toDetailResponseDto(board, boardMembers);
     }
 
-    async create(createBoardMemberDto: CreateBoardMemberDto, currentUserId?: string): Promise<BoardMemberResponseDto> {
+    async create(createBoardMemberDto: CreateBoardMemberDto, currentUserId: string): Promise<BoardMemberResponseDto> {
         const board = await this.boardsService.findById(createBoardMemberDto.boardId);
-        if (currentUserId && !this.hasRightToInvite(board.id, currentUserId))
+        if (!this.hasRightToInvite(board.id, currentUserId))
             throw new UnauthorizedException("Unauthorized");
         const invitedUser = this.usersService.findByEmail(createBoardMemberDto.email);
         const boardMember = this.boardMembersRespository.create({
@@ -117,7 +117,7 @@ export class BoardMembersService {
 
     async update(updateBoardMemberDto: UpdateBoardMemberDto, currentUserId?: string): Promise<BoardMemberResponseDto> {
         const board = await this.boardsService.findById(updateBoardMemberDto.boardId);
-        if (currentUserId && !this.hasRightToUpdateRole(board, currentUserId, updateBoardMemberDto.role))
+        if (currentUserId && !this.hasRightToUpdateRole(board.id, currentUserId, updateBoardMemberDto.role))
             throw new UnauthorizedException("Unauthorized");
         const boardMember = await this.findByBoardAndUserIds(updateBoardMemberDto.boardId, updateBoardMemberDto.userId);
         boardMember.role = updateBoardMemberDto.role;

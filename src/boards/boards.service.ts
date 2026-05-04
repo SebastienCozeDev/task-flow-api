@@ -130,7 +130,7 @@ export class BoardsService {
         return this.toResponseDto(updatedBoard);
     }
 
-    async deleteByUser(userId: string, deleteBoardDto: DeleteBoardDto): Promise<BoardDeletionResponseDto> {
+    async deleteByUser(userId: string, deleteBoardDto: DeleteBoardDto): Promise<DeletionResponseDto> {
         const user = await this.usersService.findById(userId);
         const board = await this.findById(deleteBoardDto.id);
         if (this.hasRightToDelete(board, userId))
