@@ -7,11 +7,16 @@ import { BoardsService } from "./boards.service";
 import { UpdateBoardDto } from "./dto/board/update-board.dto";
 import { DeleteBoardDto } from "./dto/board/delete-board.dto";
 import { RolesGuard } from "src/auth/roles.guard";
+import { BoardMembersService } from "./board-members.service";
+import { BoardResponseDto } from "./dto/board/board-response.dto";
 
 @ApiTags('Boards')
 @Controller("boards")
 export class BoardsController {
-    constructor(private readonly boardsService: BoardsService) {}
+    constructor(
+        private readonly boardsService: BoardsService,
+        private readonly boardMembersService: BoardMembersService,
+    ) {}
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles('admin')
@@ -34,8 +39,8 @@ export class BoardsController {
     @Post()
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Create a new board' })
-    create(@Request() req: any, @Body() createBoardDto: CreateBoardDto) {
-        return this.boardsService.create(req.user.userId, createBoardDto);
+    create(@Request() req: any, @Body() createBoardDto: CreateBoardDto): Promise<BoardResponseDto> {
+        return this.boardMembersService.createBoard(req.user.userId, createBoardDto);
     }
 
     @UseGuards(AuthGuard('jwt'))

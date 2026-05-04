@@ -11,6 +11,7 @@ import { DeletionResponseDto } from "./dto/deletion-response.dto";
 import { User } from "src/users/entities/user.entity";
 import { BoardDetailResponseDto } from "./dto/board/board-detail-response.dto";
 import { BoardMemberResponseDto } from "./dto/board-members/board-member-response.dto";
+import { BoardMemberDetailResponseDto } from "./dto/board-members/board-member-detail-response.dto";
 
 
 @Injectable()
@@ -30,7 +31,7 @@ export class BoardsService {
         });
     }
 
-    async toDetailResponseDto(board: Board, members: BoardMemberResponseDto[]): Promise<BoardDetailResponseDto> {
+    async toDetailResponseDto(board: Board, members: BoardMemberDetailResponseDto[]): Promise<BoardDetailResponseDto> {
         return new BoardDetailResponseDto({
             title: board.title,
             description: board.description,
@@ -50,6 +51,7 @@ export class BoardsService {
     }
 
     private hasRightToDelete(board: Board, userId: string): boolean {
+        // TODO: Remove ownerId everywhere to replace by role
         return board.ownerId === userId;
     }
 
@@ -90,6 +92,14 @@ export class BoardsService {
         return board;
     }
 
+    async updateByUser(userId: string, updateBoardDto: UpdateBoardDto): Promise<BoardResponseDto> {
+        const user = await this.usersService.findById(userId);
+        const board = await this.findById(updateBoardDto.id);
+        if (!this.hasRightToUpdate(board, userId))
+            throw new ForbiddenException("You can only update your boards");
+        return this.update(userId, updateBoardDto, user, board);
+    }
+
     async create(userId: string, createBoardDto: CreateBoardDto): Promise<BoardResponseDto> {
         const user = await this.usersService.findById(userId);
         if (user.maxBoard <= (await this.findByOwnerId(userId)).length)
@@ -99,16 +109,7 @@ export class BoardsService {
             ownerId: userId,
         });
         const savedBoard = await this.boardsRepository.save(board);
-        // TODO: Add role OWNER
         return this.toResponseDto(savedBoard);
-    }
-
-    async updateByUser(userId: string, updateBoardDto: UpdateBoardDto): Promise<BoardResponseDto> {
-        const user = await this.usersService.findById(userId);
-        const board = await this.findById(updateBoardDto.id);
-        if (!this.hasRightToUpdate(board, userId))
-            throw new ForbiddenException("You can only update your boards");
-        return this.update(userId, updateBoardDto, user, board);
     }
 
     async update(userId: string, updateBoardDto: UpdateBoardDto, user?: User, board?: Board): Promise<BoardResponseDto> {
@@ -131,9 +132,10 @@ export class BoardsService {
     }
 
     async deleteByUser(userId: string, deleteBoardDto: DeleteBoardDto): Promise<DeletionResponseDto> {
+        // TODO: Remove ownerId everywhere to replace by role
         const user = await this.usersService.findById(userId);
         const board = await this.findById(deleteBoardDto.id);
-        if (this.hasRightToDelete(board, userId))
+        if (!this.hasRightToDelete(board, userId))
             throw new ForbiddenException("You can only delete your boards");
         return this.delete(userId, deleteBoardDto, user, board);
     }

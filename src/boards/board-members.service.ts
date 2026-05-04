@@ -11,6 +11,8 @@ import { CreateBoardMemberDto } from "./dto/board-members/create-board-member.dt
 import { UpdateBoardMemberDto } from "./dto/board-members/update-board-member.dto";
 import { BoardDetailResponseDto } from "./dto/board/board-detail-response.dto";
 import { DeletionResponseDto } from "./dto/deletion-response.dto";
+import { CreateBoardDto } from "./dto/board/create-board.dto";
+import { BoardResponseDto } from "./dto/board/board-response.dto";
 
 @Injectable()
 export class BoardMembersService {
@@ -41,7 +43,7 @@ export class BoardMembersService {
     private async hasRightToInvite(boardId: string, userId: string, boardMember?: BoardMember): Promise<boolean> {
         if (!boardMember)
             boardMember = await this.findByBoardAndUserIds(boardId, userId);
-        return boardMember && (
+        return (
             boardMember.role === BoardMemberRole.OWNER
             || boardMember.role === BoardMemberRole.MAINTENER
         );
@@ -59,13 +61,13 @@ export class BoardMembersService {
         return await this.hasRightToUpdateRole(boardId, userId, role);
     }
 
-    private async findByAllBoardId(boardId: string): Promise<BoardMemberResponseDto[]> {
+    private async findByAllBoardId(boardId: string): Promise<BoardMemberDetailResponseDto[]> {
         const boardMembers = await this.boardMembersRespository.find({
             where: { boardId },
             relations: ['user', 'invitedBy'],
         });
         return boardMembers.map(
-            (boardMember: BoardMember) => this.toResponseDto(boardMember)
+            (boardMember: BoardMember) => this.toDetailResponseDto(boardMember)
         );
     }
 
@@ -103,7 +105,7 @@ export class BoardMembersService {
 
     async create(createBoardMemberDto: CreateBoardMemberDto, currentUserId: string): Promise<BoardMemberResponseDto> {
         const board = await this.boardsService.findById(createBoardMemberDto.boardId);
-        if (!this.hasRightToInvite(board.id, currentUserId))
+        if (!await this.hasRightToInvite(board.id, currentUserId))
             throw new UnauthorizedException("Unauthorized");
         const invitedUser = this.usersService.findByEmail(createBoardMemberDto.email);
         const boardMember = this.boardMembersRespository.create({
@@ -133,5 +135,17 @@ export class BoardMembersService {
         return new DeletionResponseDto({
             message: `(ID: ${userId}) has benn successfully deleted from (ID: ${boardId})`,
         })
+    }
+
+    async createBoard(currentUserId: string, createBoardDto: CreateBoardDto): Promise<BoardResponseDto> {
+        const savedBoard = await this.boardsService.create(currentUserId, createBoardDto);
+        const boardMember = this.boardMembersRespository.create({
+            boardId: savedBoard.id,
+            userId: currentUserId,
+            role: BoardMemberRole.OWNER,
+            invitedById: currentUserId,
+        })
+        await this.boardMembersRespository.save(boardMember);
+        return savedBoard
     }
 }
