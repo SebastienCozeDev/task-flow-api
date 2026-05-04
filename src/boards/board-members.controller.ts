@@ -8,10 +8,9 @@ import { BoardMemberDetailResponseDto } from "./dto/board-members/board-member-d
 import { CreateBoardMemberDto } from "./dto/board-members/create-board-member.dto";
 import { UpdateBoardMemberDto } from "./dto/board-members/update-board-member.dto";
 import { DeletionResponseDto } from "./dto/deletion-response.dto";
-import { BoardDetailResponseDto } from "./dto/board/board-detail-response.dto";
 import { BoardMemberResponseDto } from "./dto/board-members/board-member-response.dto";
 
-@ApiTags('Boards')
+@ApiTags('Board Members')
 @Controller('boards')
 export class BoardMembersController {
     constructor(private readonly boardMembersService: BoardMembersService) {}
@@ -31,23 +30,6 @@ export class BoardMembersController {
     @ApiOperation({ summary: 'Retrieve a specific board member by board and user ID with admin privilege' })
     async findByIdByAdmin(@Request() req: any, @Param('boardId') boardId: string, @Param('userId') userId: string): Promise<BoardMemberDetailResponseDto> {
         return await this.boardMembersService.findByBoardAndUserIdsDetail(boardId, userId);
-    }
-
-    @UseGuards(AuthGuard('jwt'))
-    @Get('me/:boardId')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Retrieve a specific board of the current user by ID' })
-    async getMyBoardDetail(@Request() req: any, @Param('boardId') boardId: string): Promise<BoardDetailResponseDto> {
-        return await this.boardMembersService.findBoardByIdWithDetail(boardId, req.user.userId);
-    }
-
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('admin')
-    @Get(':boardId')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Retrieve a specific board by ID with admin privilege' })
-    async findBoardById(@Request() req: any, @Param('boardId') boardId: string): Promise<BoardDetailResponseDto> {
-        return await this.boardMembersService.findBoardByIdWithDetail(boardId);
     }
 
     @UseGuards(AuthGuard('jwt'))

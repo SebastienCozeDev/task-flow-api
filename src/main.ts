@@ -14,6 +14,7 @@ async function bootstrap() {
     .addTag('App', 'Operations related to app')
     .addTag('Auth', 'Operations related to the authentication')
     .addTag('Boards', 'Operations related to boards')
+    .addTag('Board Members', 'Operations related to board members')
     .addTag('Users', 'Operations related to users')
     .build();
 
