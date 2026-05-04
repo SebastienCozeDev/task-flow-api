@@ -103,7 +103,7 @@ export class BoardRightsService {
         const updatedMember = await this.isMemberOfBoard(board, updatedUserId); 
         if (
             (boardMember.role != BoardMemberRole.OWNER || role === BoardMemberRole.OWNER)
-            && (boardMember.role != BoardMemberRole.MAINTENER || role in [BoardMemberRole.OWNER, BoardMemberRole.MAINTENER] || )
+            && (boardMember.role != BoardMemberRole.MAINTENER || role in [BoardMemberRole.OWNER, BoardMemberRole.MAINTENER])
         )
             throw new ForbiddenException("You are not a owner or maintener of this board or the seleted role is too high");
         return [boardMember, updatedMember];
