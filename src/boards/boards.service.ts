@@ -10,8 +10,8 @@ import { DeleteBoardDto } from "./dto/board/delete-board.dto";
 import { DeletionResponseDto } from "./dto/deletion-response.dto";
 import { User } from "src/users/entities/user.entity";
 import { BoardDetailResponseDto } from "./dto/board/board-detail-response.dto";
-import { BoardMemberResponseDto } from "./dto/board-members/board-member-response.dto";
 import { BoardMemberDetailResponseDto } from "./dto/board-members/board-member-detail-response.dto";
+import { BoardRightsService } from "./board-rights.service";
 
 
 @Injectable()
@@ -20,6 +20,7 @@ export class BoardsService {
         @InjectRepository(Board)
         private readonly boardsRepository: Repository<Board>,
         private readonly usersService: UsersService,
+        private readonly boardRightsService: BoardRightsService,
     ) {}
 
     toResponseDto(board: Board): BoardResponseDto {
@@ -38,21 +39,6 @@ export class BoardsService {
             owner: this.usersService.toResponseDto(board.owner),
             members: members,
         });
-    }
-
-    hasRightToRead(board: Board, userId: string): boolean {
-        // TODO: Edit with board members implementation
-        return this.hasRightToUpdate(board, userId);
-    }
-
-    private hasRightToUpdate(board: Board, userId: string): boolean {
-        // TODO: Edit with board members implementation
-        return this.hasRightToDelete(board, userId);
-    }
-
-    private hasRightToDelete(board: Board, userId: string): boolean {
-        // TODO: Remove ownerId everywhere to replace by role
-        return board.ownerId === userId;
     }
 
     async findAll(): Promise<BoardResponseDto[]> {
@@ -87,17 +73,9 @@ export class BoardsService {
         });
         if (!board)
             throw new NotFoundException("Board not found");
-        if (userId && !this.hasRightToRead(board, userId))
-            throw new UnauthorizedException("Unauthorized");
+        if (userId)
+            await this.boardRightsService.hasRightToReadBoard(board, userId)
         return board;
-    }
-
-    async updateByUser(userId: string, updateBoardDto: UpdateBoardDto): Promise<BoardResponseDto> {
-        const user = await this.usersService.findById(userId);
-        const board = await this.findById(updateBoardDto.id);
-        if (!this.hasRightToUpdate(board, userId))
-            throw new ForbiddenException("You can only update your boards");
-        return this.update(userId, updateBoardDto, user, board);
     }
 
     async create(userId: string, createBoardDto: CreateBoardDto): Promise<BoardResponseDto> {
@@ -110,6 +88,13 @@ export class BoardsService {
         });
         const savedBoard = await this.boardsRepository.save(board);
         return this.toResponseDto(savedBoard);
+    }
+
+    async updateByUser(userId: string, updateBoardDto: UpdateBoardDto): Promise<BoardResponseDto> {
+        const user = await this.usersService.findById(userId);
+        const board = await this.findById(updateBoardDto.id);
+        await this.boardRightsService.hasRightToUpdateBoard(board, userId);
+        return this.update(userId, updateBoardDto, user, board);
     }
 
     async update(userId: string, updateBoardDto: UpdateBoardDto, user?: User, board?: Board): Promise<BoardResponseDto> {
@@ -132,11 +117,9 @@ export class BoardsService {
     }
 
     async deleteByUser(userId: string, deleteBoardDto: DeleteBoardDto): Promise<DeletionResponseDto> {
-        // TODO: Remove ownerId everywhere to replace by role
         const user = await this.usersService.findById(userId);
         const board = await this.findById(deleteBoardDto.id);
-        if (!this.hasRightToDelete(board, userId))
-            throw new ForbiddenException("You can only delete your boards");
+        await this.boardRightsService.hasRightToDeleteBoard(board, userId);
         return this.delete(userId, deleteBoardDto, user, board);
     }
 
