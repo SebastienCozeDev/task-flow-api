@@ -9,6 +9,7 @@ import {
     Unique,
     UpdateDateColumn,
 } from 'typeorm';
+import { Board } from './board.entity';
 
 
 export enum BoardMemberRole {
@@ -38,6 +39,7 @@ export class BoardMember {
     @Column({
         type: 'enum',
         enum: BoardMemberRole,
+        default: BoardMemberRole.READER,
     })
     role: BoardMemberRole;
 

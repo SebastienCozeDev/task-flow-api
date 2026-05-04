@@ -37,11 +37,13 @@ export class BoardsService {
         });
     }
 
-    private hasRightToRead(board: Board, userId: string): boolean {
+    hasRightToRead(board: Board, userId: string): boolean {
+        // TODO: Edit with board members implementation
         return this.hasRightToUpdate(board, userId);
     }
 
     private hasRightToUpdate(board: Board, userId: string): boolean {
+        // TODO: Edit with board members implementation
         return this.hasRightToDelete(board, userId);
     }
 
@@ -64,6 +66,8 @@ export class BoardsService {
             (board: Board) => this.toResponseDto(board)
         );
     }
+
+    // TODO: Add method to find all boards where current user is member to replace boards/me endpoint
 
     async findById(id: string): Promise<Board> {
         const board = await this.boardsRepository.findOneBy({ id });
@@ -93,6 +97,7 @@ export class BoardsService {
             ownerId: userId,
         });
         const savedBoard = await this.boardsRepository.save(board);
+        // TODO: Add role OWNER
         return this.toResponseDto(savedBoard);
     }
 
@@ -113,7 +118,7 @@ export class BoardsService {
             throw new ForbiddenException("You can't transfert this board without password");
         if (updateBoardDto.password && !this.usersService.checkPassword(user, updateBoardDto.password))
             throw new ForbiddenException("Invalid password");
-        if (updateBoardDto.ownerId)
+        if (updateBoardDto.ownerId) // TODO: Remove ownerId everywhere to replace by role
             board.ownerId = updateBoardDto.ownerId;
         if (updateBoardDto.title)
             board.title = updateBoardDto.title;
