@@ -15,7 +15,7 @@ import { Board } from './board.entity';
 export enum BoardMemberRole {
     READER = 'reader',
     EDITOR = 'editor',
-    MAINTENER = 'maintener',
+    MAINTAINER = 'maintainer',
     OWNER = 'owner',
 }
 

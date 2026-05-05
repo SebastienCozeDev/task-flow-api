@@ -7,6 +7,9 @@ import { UsersService } from "src/users/users.service";
 import { CreateTaskDto } from "./dto/create-task.dto";
 import { UpdateTaskDto } from "./dto/update-task.dto";
 import { DeleteResult } from "typeorm/browser";
+import { BoardRightsService } from "src/boards/board-rights.service";
+import { BoardsService } from "src/boards/boards.service";
+import { DeletionResponseDto } from "src/boards/dto/deletion-response.dto";
 
 
 @Injectable()
@@ -15,6 +18,8 @@ export class TasksService {
         @InjectRepository(Task)
         private readonly tasksRepository: Repository<Task>,
         private readonly usersService: UsersService,
+        private readonly boardRightsService: BoardRightsService,
+        private readonly boardsService: BoardsService,
     ) {}
 
     /**
@@ -110,5 +115,66 @@ export class TasksService {
      */
     async deleteEntity(id: string): Promise<DeleteResult> {
         return await this.tasksRepository.delete(id);
+    }
+
+    /**
+     * Find all entities by assignedToId.
+     * @param assignedToId The ID of the assignee
+     * @returns The finded entities in DTO format
+     */
+    async findAllByAssignedToId(assignedToId: string): Promise<TaskDetailResponseDto[]> {
+        return (await this.findAllEntitiesByAssignedToId(assignedToId)).map(
+            (task => this.toDetailResponseDto(task))
+        );
+    }
+
+    /**
+     * Find all entities by boardId.
+     * @param boardId The ID of the board
+     * @returns The finded entities in DTO format
+     */
+    async findAllByBoardId(boardId: string, currentUserId: string): Promise<TaskDetailResponseDto[]> {
+        await this.boardRightsService.isMemberOfBoard(
+            await this.boardsService.findById(boardId),
+            currentUserId,
+        );
+        return (await this.findAllEntitiesByBoardId(boardId)).map(
+            (task => this.toDetailResponseDto(task))
+        );
+    }
+
+    /**
+     * Create a task entity.
+     * @param createTaskDto The create task DTO object
+     * @param createdById The ID of the creator
+     * @returns The new task entity in DTO format
+     */
+    async create(createTaskDto: CreateTaskDto, currentUserId: string): Promise<TaskDetailResponseDto> {
+        // TODO: Check right
+        return this.toDetailResponseDto(await this.createEntity(createTaskDto, currentUserId));
+    }
+
+        /**
+     * Update a task entity.
+     * @param updateTaskDto The update task DTO object
+     * @param updatedById The ID of the updater
+     * @returns The updated task in DTO format
+     */
+    async update(updateTaskDto: UpdateTaskDto, currentUserId: string): Promise<TaskDetailResponseDto> {
+        // TODO: Check right
+        return this.toDetailResponseDto(await this.updateEntity(updateTaskDto, currentUserId));
+    }
+
+    /**
+     * Delete a task entity.
+     * @param id The ID of the task to delete
+     * @returns The deletion confirmation in DTO format
+     */
+    async delete(id: string, currentUserId: string): Promise<DeletionResponseDto> {
+        // TODO: Check right
+        await this.deleteEntity(id);
+        return new DeletionResponseDto({
+            message: `(ID:${id} has been successfully deleted)`,
+        });
     }
 }
