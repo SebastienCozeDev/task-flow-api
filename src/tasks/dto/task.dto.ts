@@ -4,17 +4,9 @@ import { TaskState } from '../entities/task.entity';
 
 
 export class TaskDto {
-    @ApiProperty({ example: 'My Super Task', description: 'The title of the task' })
-    @IsString()
-    title: string;
-
     @ApiPropertyOptional({ example: 'My Super Description', description: 'The description of the task' })
     @IsString()
     description?: string;
-
-    @ApiPropertyOptional({ example: 'draft', description: 'The state of the task' })
-    @IsEnum(TaskState)
-    state?: TaskState;
 
     @ApiPropertyOptional({ example: 'https://sebastien.cozedev.com/img/icon.png', description: 'The image link of the task' })
     @IsString()

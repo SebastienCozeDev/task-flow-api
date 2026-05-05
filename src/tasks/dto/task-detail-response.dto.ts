@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
 import { UserResponseDto } from 'src/users/dto/user-response.dto';
 import { TaskDto } from './task.dto';
+import { TaskState } from '../entities/task.entity';
 
 
 export class TaskDetailResponseDto extends TaskDto {
@@ -9,9 +10,13 @@ export class TaskDetailResponseDto extends TaskDto {
     @IsString()
     id: string;
 
-    @ApiProperty({ example: 'draft', description: 'The state of the task' })
+    @ApiProperty({ example: 'My Super Task', description: 'The title of the task' })
     @IsString()
-    state: string;
+    title: string;
+
+    @ApiProperty({ example: 'draft', description: 'The state of the task' })
+    @IsEnum(TaskState)
+    state: TaskState;
 
     @ApiPropertyOptional({ description: 'The creator of the task' })
     createdBy?: UserResponseDto;
