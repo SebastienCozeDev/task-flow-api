@@ -19,7 +19,7 @@ export class TaskDto {
     @IsString()
     moreLink?: string;
 
-    @ApiPropertyOptional({ description: 'The due date of the task' })
+    @ApiPropertyOptional({ example: '2026-05-05', description: 'The due date of the task' })
     @IsOptional()
     @Type(() => Date)
     @IsDate()

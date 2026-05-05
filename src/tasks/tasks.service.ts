@@ -28,18 +28,19 @@ export class TasksService {
      * @returns The detail response DTO object
      */
     toDetailResponseDto(task: Task): TaskDetailResponseDto {
-        return new TaskDetailResponseDto({
-            id: task.id,
-            title: task.title,
+        const dto =  new TaskDetailResponseDto({
             description: task.description,
-            state: task.state,
             imageLink: task.imageLink ?? undefined,
             moreLink: task.moreLink ?? undefined,
             dueDate: task.dueDate ?? undefined,
-            createdBy: task.createdBy ? this.usersService.toResponseDto(task.createdBy) : undefined,
-            lastUpdatedBy: task.lastUpdatedBy ? this.usersService.toResponseDto(task.lastUpdatedBy) : undefined,
-            assignedTo: task.assignedTo ? this.usersService.toResponseDto(task.assignedTo) : undefined,
         });
+        dto.id = task.id;
+        dto.title = task.title;
+        dto.state = task.state;
+        dto.createdBy = task.createdBy ? this.usersService.toResponseDto(task.createdBy) : undefined;
+        dto.lastUpdatedBy = task.lastUpdatedBy ? this.usersService.toResponseDto(task.lastUpdatedBy) : undefined;
+        dto.assignedTo = task.assignedTo ? this.usersService.toResponseDto(task.assignedTo) : undefined;
+        return dto;
     }
 
     /**

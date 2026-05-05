@@ -59,8 +59,6 @@ export class BoardRightsService {
      */
     async isEditorOfBoard(board: Board, userId: string): Promise<BoardMember> {
         const boardMember = await this.isMemberOfBoard(board, userId);
-        console.log("role", boardMember.role);
-        console.log("OWNER", BoardMemberRole.OWNER);
         if (!([BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER, BoardMemberRole.EDITOR].includes(boardMember.role)))
             throw new ForbiddenException("You are not editor of the board");
         return boardMember;
