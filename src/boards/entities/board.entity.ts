@@ -1,3 +1,4 @@
+import { IsEmpty } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
 import {
     Column,
@@ -22,8 +23,8 @@ export class Board {
     @Column({ length: 120 })
     title: string;
 
-    @Column({ length: 255 })
-    description: string;
+    @Column({ length: 255, nullable: true })
+    description?: string;
 
     @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'owner_id' })

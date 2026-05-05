@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDate, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsString } from 'class-validator';
+import { TaskState } from '../entities/task.entity';
 
 
 export class TaskDto {
@@ -12,8 +13,8 @@ export class TaskDto {
     description?: string;
 
     @ApiPropertyOptional({ example: 'draft', description: 'The state of the task' })
-    @IsString()
-    state?: string;
+    @IsEnum(TaskState)
+    state?: TaskState;
 
     @ApiPropertyOptional({ example: 'https://sebastien.cozedev.com/img/icon.png', description: 'The image link of the task' })
     @IsString()

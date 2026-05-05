@@ -1,3 +1,4 @@
+import { IsEmpty } from 'class-validator';
 import { Board } from 'src/boards/entities/board.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
@@ -23,7 +24,6 @@ export enum TaskState {
 
 
 @Entity()
-@Unique('UQ_board_member_user_board', ['userId', 'boardId'])
 export class Task {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -31,8 +31,8 @@ export class Task {
     @Column({ length: 120 })
     title: string;
 
-    @Column({ length: 255 })
-    description: string;
+    @Column({ length: 255, nullable: true })
+    description?: string;
 
     @Column({ name: 'board_id' })
     boardId: string;
@@ -41,19 +41,19 @@ export class Task {
         name: 'created_by_id',
         nullable: true,
     })
-    createdById?: string | null;
+    createdById?: string;
 
     @Column({
         name: 'last_updated_by_id',
         nullable: true,
     })
-    lastUpdatedById?: string | null;
+    lastUpdatedById?: string;
 
     @Column({
         name: 'assigned_to_id',
         nullable: true,
     })
-    assignedToId?: string | null;
+    assignedToId?: string;
 
     @Column({
         type: 'enum',
