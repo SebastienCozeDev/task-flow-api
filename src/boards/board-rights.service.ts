@@ -3,6 +3,7 @@ import { Repository } from "typeorm";
 import { BoardMember, BoardMemberRole } from "./entities/board-member.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Board } from "./entities/board.entity";
+import { Task } from "src/tasks/entities/task.entity";
 
 @Injectable()
 export class BoardRightsService {
@@ -20,7 +21,7 @@ export class BoardRightsService {
     async isMemberOfBoard(board: Board, userId: string): Promise<BoardMember> {
         const boardMember = await this.boardMembersRespository.findOneBy({ userId });
         if (!boardMember)
-            throw new ForbiddenException("You are not a member of this board")
+            throw new ForbiddenException("The selected user or you are not a member of this board");
         return boardMember 
     }
 
@@ -31,10 +32,36 @@ export class BoardRightsService {
      * @returns The board member if the user is owner a the board
      */
     async isOwnerOfBoard(board: Board, userId: string): Promise<BoardMember> {
-        const boardMember = await this.boardMembersRespository.findOneBy({ userId });
-        if (!boardMember)
-            throw new ForbiddenException("The selected user or you are not a member of this board")
-        return boardMember 
+        const boardMember = await this.isMemberOfBoard(board, userId);
+        if (boardMember.role !== BoardMemberRole.OWNER)
+            throw new ForbiddenException("You are not owner of the board");
+        return boardMember;
+    }
+
+    /**
+     * Check if a specific user is maintainer of a specific board.
+     * @param board The specific board
+     * @param userId The ID of the specific user
+     * @returns The board member if the user is maintainer a the board
+     */
+    async isMaintainerOfBoard(board: Board, userId: string): Promise<BoardMember> {
+        const boardMember = await this.isMemberOfBoard(board, userId);
+        if (!(boardMember.role in [BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER]))
+            throw new ForbiddenException("You are not maintainer of the board");
+        return boardMember;
+    }
+
+    /**
+     * Check if a specific user is editor of a specific board.
+     * @param board The specific board
+     * @param userId The ID of the specific user
+     * @returns The board member if the user is editor a the board
+     */
+    async isEditorOfBoard(board: Board, userId: string): Promise<BoardMember> {
+        const boardMember = await this.isMemberOfBoard(board, userId);
+        if (!(boardMember.role in [BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER, BoardMemberRole.EDITOR]))
+            throw new ForbiddenException("You are not editor of the board");
+        return boardMember;
     }
 
     /**
@@ -55,8 +82,8 @@ export class BoardRightsService {
      */
     async hasRightToUpdateBoard(board: Board, userId: string): Promise<BoardMember> {
         const boardMember = await this.isMemberOfBoard(board, userId);
-        if (!(boardMember.role in [BoardMemberRole.MAINTENER, BoardMemberRole.OWNER]))
-            throw new ForbiddenException("You are not maintener or owner of this board");
+        if (!(boardMember.role in [BoardMemberRole.MAINTAINER, BoardMemberRole.OWNER]))
+            throw new ForbiddenException("You are not maintainer or owner of this board");
         return boardMember;
     }
 
@@ -82,8 +109,8 @@ export class BoardRightsService {
         const invitedMember = await this.isMemberOfBoard(board, invitedUserId);
         if (invitedMember)
             throw new ForbiddenException("The selected user is already invited")
-        if (boardMember.role in [BoardMemberRole.OWNER, BoardMemberRole.MAINTENER])
-            throw new ForbiddenException("You are not a owner or maintener of this board");
+        if (boardMember.role in [BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER])
+            throw new ForbiddenException("You are not a owner or maintainer of this board");
         return boardMember;
     }
 
@@ -100,9 +127,9 @@ export class BoardRightsService {
         const updatedMember = await this.isMemberOfBoard(board, updatedUserId); 
         if (
             (boardMember.role != BoardMemberRole.OWNER || role === BoardMemberRole.OWNER)
-            && (boardMember.role != BoardMemberRole.MAINTENER || role in [BoardMemberRole.OWNER, BoardMemberRole.MAINTENER])
+            && (boardMember.role != BoardMemberRole.MAINTAINER || role in [BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER])
         )
-            throw new ForbiddenException("You are not a owner or maintener of this board or the seleted role is too high");
+            throw new ForbiddenException("You are not a owner or maintainer of this board or the seleted role is too high");
         return [boardMember, updatedMember];
     }
 
@@ -116,8 +143,44 @@ export class BoardRightsService {
     async hasRightToKickMemberInBoard(board: Board, userId: string, kickedUserId: string): Promise<BoardMember[]> {
         const boardMember = await this.isMemberOfBoard(board, userId);
         const kickedMember = await this.isMemberOfBoard(board, kickedUserId); 
-        if (boardMember.role != BoardMemberRole.OWNER && (kickedMember.invitedById != userId || boardMember.role != BoardMemberRole.MAINTENER))
+        if (boardMember.role != BoardMemberRole.OWNER && (kickedMember.invitedById != userId || boardMember.role != BoardMemberRole.MAINTAINER))
             throw new ForbiddenException("You are not a owner of this board and you did not invite this member");
         return [boardMember, kickedMember];
+    }
+
+    /**
+     * Check if a specific user has the right to create task in a specific board. The admin's role is not considered.
+     * @param board The specific board
+     * @param userId The ID of the specific user
+     * @returns The board member if the user has the good right
+     */
+    async hasRightToCreateTask(board: Board, userId: string): Promise<BoardMember> {
+        return await this.isEditorOfBoard(board, userId);
+    }
+
+    /**
+     * Check if a specific user has the right to update task in a specific board. The admin's role is not considered.
+     * @param board The specific board
+     * @param userId The ID of the specific user
+     * @returns The board member if the user has the good right
+     */
+    async hasRightToUpdateTask(board: Board, userId: string, task: Task): Promise<BoardMember> {
+        if (task.createdById === userId || task.assignedToId === userId) {
+            return await this.isEditorOfBoard(board, userId);
+        }
+        return await this.isMaintainerOfBoard(board, userId);
+    }
+
+    /**
+     * Check if a specific user has the right to delete task in a specific board. The admin's role is not considered.
+     * @param board The specific board
+     * @param userId The ID of the specific user
+     * @returns The board member if the user has the good right
+     */
+    async hasRightToDeleteTask(board: Board, userId: string, task: Task): Promise<BoardMember> {
+        if (task.createdById === userId) {
+            return await this.isEditorOfBoard(board, userId);
+        }
+        return await this.isMaintainerOfBoard(board, userId);
     }
 }
