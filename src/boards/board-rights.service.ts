@@ -19,7 +19,7 @@ export class BoardRightsService {
      * @returns The board member if the user is member a the board
      */
     async isMemberOfBoard(board: Board, userId: string): Promise<BoardMember> {
-        const boardMember = await this.boardMembersRespository.findOneBy({ userId });
+        const boardMember = await this.boardMembersRespository.findOneBy({ boardId: board.id, userId });
         if (!boardMember)
             throw new ForbiddenException("The selected user or you are not a member of this board");
         return boardMember 
@@ -59,6 +59,8 @@ export class BoardRightsService {
      */
     async isEditorOfBoard(board: Board, userId: string): Promise<BoardMember> {
         const boardMember = await this.isMemberOfBoard(board, userId);
+        console.log("role", boardMember.role);
+        console.log("OWNER", BoardMemberRole.OWNER);
         if (!([BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER, BoardMemberRole.EDITOR].includes(boardMember.role)))
             throw new ForbiddenException("You are not editor of the board");
         return boardMember;
