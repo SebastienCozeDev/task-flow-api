@@ -46,7 +46,7 @@ export class BoardRightsService {
      */
     async isMaintainerOfBoard(board: Board, userId: string): Promise<BoardMember> {
         const boardMember = await this.isMemberOfBoard(board, userId);
-        if (!(boardMember.role in [BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER]))
+        if (!([BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER].includes(boardMember.role)))
             throw new ForbiddenException("You are not maintainer of the board");
         return boardMember;
     }
@@ -59,7 +59,7 @@ export class BoardRightsService {
      */
     async isEditorOfBoard(board: Board, userId: string): Promise<BoardMember> {
         const boardMember = await this.isMemberOfBoard(board, userId);
-        if (!(boardMember.role in [BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER, BoardMemberRole.EDITOR]))
+        if (!([BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER, BoardMemberRole.EDITOR].includes(boardMember.role)))
             throw new ForbiddenException("You are not editor of the board");
         return boardMember;
     }
@@ -82,7 +82,7 @@ export class BoardRightsService {
      */
     async hasRightToUpdateBoard(board: Board, userId: string): Promise<BoardMember> {
         const boardMember = await this.isMemberOfBoard(board, userId);
-        if (!(boardMember.role in [BoardMemberRole.MAINTAINER, BoardMemberRole.OWNER]))
+        if (!([BoardMemberRole.MAINTAINER, BoardMemberRole.OWNER].includes(boardMember.role)))
             throw new ForbiddenException("You are not maintainer or owner of this board");
         return boardMember;
     }
@@ -109,7 +109,7 @@ export class BoardRightsService {
         const invitedMember = await this.isMemberOfBoard(board, invitedUserId);
         if (invitedMember)
             throw new ForbiddenException("The selected user is already invited")
-        if (boardMember.role in [BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER])
+        if ([BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER].includes(boardMember.role))
             throw new ForbiddenException("You are not a owner or maintainer of this board");
         return boardMember;
     }
@@ -127,7 +127,7 @@ export class BoardRightsService {
         const updatedMember = await this.isMemberOfBoard(board, updatedUserId); 
         if (
             (boardMember.role != BoardMemberRole.OWNER || role === BoardMemberRole.OWNER)
-            && (boardMember.role != BoardMemberRole.MAINTAINER || role in [BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER])
+            && (boardMember.role != BoardMemberRole.MAINTAINER || [BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER].includes(role))
         )
             throw new ForbiddenException("You are not a owner or maintainer of this board or the seleted role is too high");
         return [boardMember, updatedMember];
