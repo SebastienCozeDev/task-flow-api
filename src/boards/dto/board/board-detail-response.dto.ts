@@ -1,7 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 import { UserResponseDto } from 'src/users/dto/user-response.dto';
-import { BoardMemberResponseDto } from '../board-members/board-member-response.dto';
 import { BoardMemberDetailResponseDto } from '../board-members/board-member-detail-response.dto';
 
 
