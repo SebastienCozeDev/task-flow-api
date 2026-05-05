@@ -69,7 +69,7 @@ export class Task {
     moreLink?: string | null;
 
     @Column({ type: 'date', nullable: true })
-    dueDate?: string | null;
+    dueDate?: Date | null;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
