@@ -63,13 +63,13 @@ export class Task {
     state: TaskState;
 
     @Column({ length: 255, nullable: true })
-    imageLink?: string | null;
+    imageLink?: string;
 
     @Column({ length: 255, nullable: true })
-    moreLink?: string | null;
+    moreLink?: string;
 
     @Column({ type: 'date', nullable: true })
-    dueDate?: Date | null;
+    dueDate?: Date;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
