@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsDate, IsString } from 'class-validator';
 
 
 export class TaskDto {
@@ -22,6 +22,10 @@ export class TaskDto {
     @ApiPropertyOptional({ example: 'https://sebastien.cozedev.com/', description: 'The link of the task to get more detail' })
     @IsString()
     moreLink?: string;
+
+    @ApiPropertyOptional({ description: 'The due date of the task' })
+    @IsDate()
+    dueDate?: Date;
 
     constructor(partial: Partial<TaskDto>) {
         Object.assign(this, partial);

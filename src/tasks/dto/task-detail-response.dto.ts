@@ -13,11 +13,11 @@ export class TaskDetailResponseDto extends TaskDto {
     @IsString()
     state: string;
 
-    @ApiProperty({ description: 'The creator of the task' })
-    createdBy: UserResponseDto;
+    @ApiPropertyOptional({ description: 'The creator of the task' })
+    createdBy?: UserResponseDto;
 
-    @ApiProperty({ description: 'The user who last updated the task' })
-    lastUpdatedBy: UserResponseDto;
+    @ApiPropertyOptional({ description: 'The user who last updated the task' })
+    lastUpdatedBy?: UserResponseDto;
 
     @ApiPropertyOptional({ description: 'The assignee of the task' })
     assignedTo?: UserResponseDto | null;
