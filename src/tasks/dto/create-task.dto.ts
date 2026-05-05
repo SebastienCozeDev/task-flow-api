@@ -1,6 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
-import { UserResponseDto } from 'src/users/dto/user-response.dto';
 
 
 export class CreateTaskDto {
