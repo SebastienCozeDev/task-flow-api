@@ -14,6 +14,6 @@ import { BoardRightsService } from "./board-rights.service";
     imports: [TypeOrmModule.forFeature([Board]), TypeOrmModule.forFeature([BoardMember]), UsersModule],
     controllers: [BoardsController, BoardMembersController],
     providers: [BoardsService, BoardMembersService, BoardRightsService, RolesGuard],
-    exports: [],
+    exports: [BoardsService, BoardMembersService, BoardRightsService],
 })
 export class BoardsModule {}
