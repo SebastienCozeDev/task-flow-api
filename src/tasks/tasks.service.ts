@@ -150,7 +150,8 @@ export class TasksService {
      * @returns The new task entity in DTO format
      */
     async create(createTaskDto: CreateTaskDto, currentUserId: string): Promise<TaskDetailResponseDto> {
-        // TODO: Check right
+        const board = await this.boardsService.findById(createTaskDto.boardId);
+        await this.boardRightsService.hasRightToCreateTask(board, currentUserId);
         return this.toDetailResponseDto(await this.createEntity(createTaskDto, currentUserId));
     }
 
@@ -161,7 +162,9 @@ export class TasksService {
      * @returns The updated task in DTO format
      */
     async update(updateTaskDto: UpdateTaskDto, currentUserId: string): Promise<TaskDetailResponseDto> {
-        // TODO: Check right
+        const task = await this.findEntityById(updateTaskDto.id);
+        const board = await this.boardsService.findById(task.boardId);
+        await this.boardRightsService.hasRightToUpdateTask(board, currentUserId, task);
         return this.toDetailResponseDto(await this.updateEntity(updateTaskDto, currentUserId));
     }
 
@@ -171,7 +174,9 @@ export class TasksService {
      * @returns The deletion confirmation in DTO format
      */
     async delete(id: string, currentUserId: string): Promise<DeletionResponseDto> {
-        // TODO: Check right
+        const task = await this.findEntityById(id);
+        const board = await this.boardsService.findById(task.boardId);
+        await this.boardRightsService.hasRightToDeleteTask(board, currentUserId, task);
         await this.deleteEntity(id);
         return new DeletionResponseDto({
             message: `(ID:${id} has been successfully deleted)`,
