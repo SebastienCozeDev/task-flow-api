@@ -23,7 +23,7 @@ export class CreateTaskDto {
     @ApiProperty({ description: 'The assignee of the task' })
     assignedToId?: string | null;
 
-    constructor(partial: Partial<TaskDetailResponseDto>) {
+    constructor(partial: Partial<CreateTaskDto>) {
         Object.assign(this, partial);
     }
 }
