@@ -44,10 +44,7 @@ export class BoardRightsService {
      * @returns The board member if the user has the good right
      */
     async hasRightToReadBoard(board: Board, userId: string): Promise<BoardMember> {
-        const boardMember = await this.isMemberOfBoard(board, userId);
-        if (boardMember.role != BoardMemberRole.OWNER)
-            throw new ForbiddenException("You are not owner of this board");
-        return boardMember;
+        return await this.isMemberOfBoard(board, userId);
     }
 
     /**
