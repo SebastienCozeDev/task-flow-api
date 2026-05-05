@@ -10,4 +10,4 @@ import { Task } from "./entities/board-member.entity";
     providers: [TasksService, RolesGuard],
     exports: [],
 })
-export class BoardsModule {}
+export class TasksModule {}
