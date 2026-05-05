@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { UserResponseDto } from 'src/users/dto/user-response.dto';
 import { TaskDto } from './task.dto';
 import { TaskState } from '../entities/task.entity';
@@ -18,14 +18,17 @@ export class TaskDetailResponseDto extends TaskDto {
     @IsEnum(TaskState)
     state: TaskState;
 
-    @ApiPropertyOptional({ description: 'The creator of the task' })
+    @ApiPropertyOptional({ example: '1c0c8c84-2f3f-4115-be91-54b2837ca3e6', description: 'The creator of the task' })
+    @IsOptional()
     createdBy?: UserResponseDto;
 
-    @ApiPropertyOptional({ description: 'The user who last updated the task' })
+    @ApiPropertyOptional({ example: '1c0c8c84-2f3f-4115-be91-54b2837ca3e6', description: 'The user who last updated the task' })
+    @IsOptional()
     lastUpdatedBy?: UserResponseDto;
 
-    @ApiPropertyOptional({ description: 'The assignee of the task' })
-    assignedTo?: UserResponseDto | null;
+    @ApiPropertyOptional({ example: '1c0c8c84-2f3f-4115-be91-54b2837ca3e6', description: 'The assignee of the task' })
+    @IsOptional()
+    assignedTo?: UserResponseDto;
 
     constructor(partial: Partial<TaskDetailResponseDto>) {
         super(partial);
