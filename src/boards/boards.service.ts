@@ -34,6 +34,7 @@ export class BoardsService {
 
     toDetailResponseDto(board: Board, members: BoardMemberDetailResponseDto[]): BoardDetailResponseDto {
         return new BoardDetailResponseDto({
+            id: board.id,
             title: board.title,
             description: board.description,
             owner: this.usersService.toResponseDto(board.owner),
