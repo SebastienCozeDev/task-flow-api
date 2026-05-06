@@ -22,4 +22,4 @@ USER node
 
 EXPOSE 3000
 
-CMD ["node", "dist/main"]
+CMD ["sh", "-c", "sleep 5 && npm run migration:run && node dist/main"]
