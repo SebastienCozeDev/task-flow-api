@@ -10,6 +10,11 @@
 TaskFlow API is a REST API for collaborative task and board management.  
 It helps users manage boards, tasks, members, and permissions in a shared workflow environment.
 
+## 📄 License
+
+TaskFlow API is licensed under the terms described in the [LICENSE file](LICENSE).  
+Please refer to the LICENSE file for complete license terms.
+
 ## ✨ Features
 
 - JWT authentication
