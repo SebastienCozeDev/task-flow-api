@@ -18,6 +18,16 @@ list-services: ## List the services defined in the Docker Compose file
 	@echo "Available services:"
 	@$(DOCKER_COMPOSE_CMD) config --services
 
+init:	## Create the networks
+	docker network create shared-internal
+	docker network create shared-web
+
+generate-migrations:
+	$(DOCKER_COMPOSE_CMD) exec api-dev sh -c "npm run migration:generate src/database/migrations/InitialSchema"
+
+run-migrations:
+	$(DOCKER_COMPOSE_CMD) exec api-dev sh -c "npm run migration:run"
+
 build: ## Build the Docker images
 ifndef PROFILE
 	@$(MAKE) list-profiles
