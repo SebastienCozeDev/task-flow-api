@@ -89,7 +89,7 @@ Swagger documentation is available when the application is running.
 Typical local URL:
 
 ```bash
-http://localhost:3000
+http://localhost:3000/docs
 ```
 
 Adjust the port or route if your local configuration is different.
