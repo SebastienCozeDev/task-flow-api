@@ -3,12 +3,10 @@ FROM node:24-slim
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY apps/web/package.json apps/web/package.json
 
 RUN npm install
-RUN npm install -g @nestjs/cli
-
-COPY . .
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "dev", "-w", "apps/web"]
