@@ -3,7 +3,7 @@ services:
     profiles: ["dev"]
     build:
       context: .
-      dockerfile: Dockerfile-dev
+      dockerfile: ./apps/api/Dockerfile-dev
     container_name: taskflow-api-dev
     env_file:
       - .env
@@ -19,7 +19,8 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    command: npm run start:dev
+      - /usr/src/app/apps/api/node_modules
+    command: npm run start:dev -w apps/api
     depends_on:
       - postgres
     networks:
@@ -30,7 +31,7 @@ services:
     profiles: ["prod"]
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./apps/api/Dockerfile
     container_name: taskflow-api-prod
     env_file:
       - .env
