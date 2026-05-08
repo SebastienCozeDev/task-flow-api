@@ -1,0 +1,12 @@
+FROM node:24-slim
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+COPY apps/web/package.json apps/web/package.json
+
+RUN npm install
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev", "-w", "apps/web"]

@@ -15,7 +15,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
     ports:
-      - "${PORT}:3000"
+      - "${API_PORT}:3000"
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -50,14 +50,67 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=shared-web"
-      - "traefik.http.routers.taskflow-api.rule=Host(`${PROD_DOMAIN}`)"
+      - "traefik.http.routers.taskflow-api.rule=Host(`${API_PROD_DOMAIN}`)"
       - "traefik.http.routers.taskflow-api.entrypoints=websecure"
       - "traefik.http.routers.taskflow-api.tls.certresolver=myresolver"
       - "traefik.http.routers.taskflow-api.service=taskflow-api-service"
       - "traefik.http.services.taskflow-api-service.loadbalancer.server.port=3000"
-      - "traefik.http.routers.taskflow-api-http.rule=Host(`${PROD_DOMAIN}`)"
+      - "traefik.http.routers.taskflow-api-http.rule=Host(`${API_PROD_DOMAIN}`)"
       - "traefik.http.routers.taskflow-api-http.entrypoints=web"
       - "traefik.http.routers.taskflow-api-http.middlewares=to-https"
+      - "traefik.http.middlewares.to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.to-https.redirectscheme.permanent=true"
+
+  web-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile-dev
+    container_name: taskflow-web-dev
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: 1
+    ports:
+      - "${WEB_PORT}:3000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/apps/web/node_modules
+      - /usr/src/app/apps/web/.next
+    command: npm run dev -w apps/web
+    depends_on:
+      - api-dev
+    networks:
+      - web
+
+  web-prod:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    container_name: taskflow-web-prod
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: 1
+    depends_on:
+      - api-prod
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=shared-web"
+      - "traefik.http.routers.taskflow-web.rule=Host(`${WEB_PROD_DOMAIN}`)"
+      - "traefik.http.routers.taskflow-web.entrypoints=websecure"
+      - "traefik.http.routers.taskflow-web.tls.certresolver=myresolver"
+      - "traefik.http.routers.taskflow-web.service=taskflow-web-service"
+      - "traefik.http.services.taskflow-web-service.loadbalancer.server.port=3000"
+      - "traefik.http.routers.taskflow-web-http.rule=Host(`${WEB_PROD_DOMAIN}`)"
+      - "traefik.http.routers.taskflow-web-http.entrypoints=web"
+      - "traefik.http.routers.taskflow-web-http.middlewares=to-https"
       - "traefik.http.middlewares.to-https.redirectscheme.scheme=https"
       - "traefik.http.middlewares.to-https.redirectscheme.permanent=true"
   
