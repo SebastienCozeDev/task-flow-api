@@ -14,7 +14,7 @@ export class AppService {
 
   getOpenSourceLink(): { visibility: string, ownership: string, link: string } {
     return {
-      visibility: "Private",
+      visibility: "Public",
       ownership: "@SebastienCozeDev",
       link: "https://github.com/SebastienCozeDev/task-flow-api",
     }

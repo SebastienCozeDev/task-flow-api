@@ -28,6 +28,12 @@ generate-migrations:
 run-migrations:
 	$(DOCKER_COMPOSE_CMD) exec api-dev sh -c "npm run migration:run"
 
+test:
+	$(DOCKER_COMPOSE_CMD) exec api-dev sh -c "npm run test"
+
+cov:
+	$(DOCKER_COMPOSE_CMD) exec api-dev sh -c "npm run test:cov"
+
 build: ## Build the Docker images
 ifndef PROFILE
 	@$(MAKE) list-profiles
