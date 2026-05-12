@@ -1,6 +1,7 @@
 "use client";
 
 import { login, register } from "@/lib/auth-api";
+import { removeAccessToken, saveAccessToken } from "@/lib/auth-storage";
 
 export default function AuthDebug() {
   return (
@@ -16,6 +17,7 @@ export default function AuthDebug() {
                   password: "password123",
                 });
                 console.log("Login Result:", result);
+                if (result) saveAccessToken(result.access_token);
               }
             }
           >
@@ -27,7 +29,7 @@ export default function AuthDebug() {
           </button>
           <div>
             <div>Login</div>
-            <div className="text-xs uppercase font-semibold opacity-60">Login the current user</div>
+            <div className="text-xs uppercase font-semibold opacity-60">Login the current user and save the access token</div>
           </div>
       </li>
       <li className="list-row">
@@ -53,6 +55,22 @@ export default function AuthDebug() {
           <div>
             <div>Register</div>
             <div className="text-xs uppercase font-semibold opacity-60">Register the current user</div>
+          </div>
+      </li>
+      <li className="list-row">
+          <button
+            className="btn btn-square btn-ghost"
+            onClick={ async () => removeAccessToken() }
+          >
+            <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor">
+                <path d="M6 3L20 12 6 21 6 3z"></path>
+              </g>
+            </svg>
+          </button>
+          <div>
+            <div>Logout</div>
+            <div className="text-xs uppercase font-semibold opacity-60">Remove the access token</div>
           </div>
       </li>
     </ul>
