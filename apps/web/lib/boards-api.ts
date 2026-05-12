@@ -1,4 +1,4 @@
-import { apiFetch, createAPIEntity, deleteAPIEntity, DeletionMessageResponse, updateAPIEntity } from "./api";
+import { createAPIEntity, deleteAPIEntity, DeletionMessageResponse, getAPIEntities, updateAPIEntity } from "./api";
 import { BoardMemberResponse } from "./board-members-api";
 import { UserResponse } from "./users-api";
 
@@ -55,10 +55,7 @@ export type DeleteBoardRequest = {
  * @returns The boards
  */
 export async function getBoards(token: string): Promise<BoardResponse[] | null> {
-  return apiFetch<BoardResponse[]>("/boards", {
-    method: "GET",
-    token,
-  });
+  return getAPIEntities<BoardResponse[]>("/boards", token);
 }
 
 

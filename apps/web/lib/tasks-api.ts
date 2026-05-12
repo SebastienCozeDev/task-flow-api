@@ -1,4 +1,4 @@
-import { apiFetch, createAPIEntity, deleteAPIEntity, DeletionMessageResponse, updateAPIEntity } from "./api";
+import { createAPIEntity, deleteAPIEntity, DeletionMessageResponse, getAPIEntities, updateAPIEntity } from "./api";
 import { UserResponse } from "./users-api";
 
 /**
@@ -62,10 +62,7 @@ export type UpdateTaskRequest = TaskInfo & {
  * @returns The assigned tasks
  */
 export async function getAssignedTasks(token: string): Promise<TaskResponse[] | null> {
-  return apiFetch<TaskResponse[]>("/tasks", {
-    method: "GET",
-    token,
-  });
+  return getAPIEntities<TaskResponse[]>("/tasks", token);
 }
 
 
@@ -76,10 +73,7 @@ export async function getAssignedTasks(token: string): Promise<TaskResponse[] | 
  * @returns The tasks
  */
 export async function getTasksOfBoard(boardId: string, token: string): Promise<TaskResponse[] | null> {
-  return apiFetch<TaskResponse[]>(`/tasks/${boardId}`, {
-    method: "GET",
-    token,
-  });
+  return getAPIEntities<TaskResponse[]>(`/tasks/${boardId}`, token);
 }
 
 
@@ -108,6 +102,12 @@ export async function updateTask(data: UpdateTaskRequest, token: string): Promis
 
 
 
+/**
+ * Delete a task with API.
+ * @param taskId The task ID
+ * @param token The access token
+ * @returns The deletion message
+ */
 export async function deleteTask(taskId: string, token: string): Promise<DeletionMessageResponse | null> {
   return deleteAPIEntity(`/tasks/${taskId}`, {}, token);
 }
