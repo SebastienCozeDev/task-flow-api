@@ -1,0 +1,42 @@
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_API_PROD_DOMAIN
+    : process.env.NEXT_PUBLIC_API_DEV_DOMAIN;
+
+type ApiFetchOptions = RequestInit & {
+    token?: string;
+}
+
+
+export async function apiFetch<T>(
+    endpoint: string,
+    options: ApiFetchOptions = {}
+): Promise<T | null> {
+    const { token, headers, ...rest } = options;
+
+    const response = await fetch(`${API_URL}${endpoint}`, {
+        ...rest,
+        headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            ...headers,
+        },
+    });
+
+    if (!response.ok) {
+        let message = "An error has occured";
+
+        try {
+            const errorData = await response.json();
+            message = errorData.message || message;
+        } catch {}
+
+        throw new Error(message);
+    }
+
+    if (response.status === 204) {
+        return null;
+    }
+
+    return response.json();
+}
