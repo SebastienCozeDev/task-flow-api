@@ -1,4 +1,4 @@
-import { apiFetch, DeletionMessageResponse } from "./api";
+import { apiFetch, createAPIEntity, DeletionMessageResponse } from "./api";
 import { UserResponse } from "./users-api";
 
 export enum BoardMemberRole {
@@ -62,11 +62,7 @@ export type UpdateBoardMemberRequest = {
  * @returns The invited board member
  */
 export async function inviteBoardMember(data: InviteBoardMemberRequest, token: string): Promise<ShortBoardMemberResponse | null> {
-  return apiFetch<ShortBoardMemberResponse>("/boards/members", {
-    method: "GET",
-    token,
-    body: JSON.stringify(data),
-  });
+  return createAPIEntity<ShortBoardMemberResponse>("/boards/members", data, token);
 }
 
 

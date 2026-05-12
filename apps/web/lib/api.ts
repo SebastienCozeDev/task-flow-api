@@ -15,6 +15,23 @@ export type DeletionMessageResponse = {
 
 
 
+/**
+ * Create an API entity.
+ * @param path The path of the endpoint
+ * @param data The necessary data to create this entity
+ * @param token The access token
+ * @returns The created entity
+ */
+export async function createAPIEntity<T>(path: string, data: {}, token: string) {
+  return apiFetch<T>(path, {
+    method: "POST",
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+
+
 export async function apiFetch<T>(
   endpoint: string,
   options: ApiFetchOptions = {}

@@ -1,4 +1,4 @@
-import { apiFetch, DeletionMessageResponse } from "./api";
+import { apiFetch, createAPIEntity, DeletionMessageResponse } from "./api";
 import { BoardMemberResponse } from "./board-members-api";
 import { UserResponse } from "./users-api";
 
@@ -70,11 +70,7 @@ export async function getBoards(token: string): Promise<BoardResponse[] | null> 
  * @returns The new board
  */
 export async function createBoard(data: CreateBoardRequest, token: string): Promise<BoardResponse | null> {
-  return apiFetch<BoardResponse>("/boards", {
-    method: "POST",
-    token,
-    body: JSON.stringify(data),
-  });
+  return createAPIEntity<BoardResponse>("/boards", data, token);
 }
 
 
