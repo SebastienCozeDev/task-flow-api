@@ -8,8 +8,8 @@ const ACCESS_TOKEN_KEY = "taskflow_access_token";
  * @returns
  */
 export function saveAccessToken(token: string): void {
-    if (typeof window === "undefined") return;
-    window.sessionStorage.setItem(ACCESS_TOKEN_KEY, token);
+  if (typeof window === "undefined") return;
+  window.sessionStorage.setItem(ACCESS_TOKEN_KEY, token);
 }
 
 
@@ -19,8 +19,8 @@ export function saveAccessToken(token: string): void {
  * @returns The access token
  */
 export function getAccessToken(): string | null {
-    if (typeof window === "undefined") return null;
-    return window.sessionStorage.getItem(ACCESS_TOKEN_KEY);
+  if (typeof window === "undefined") return null;
+  return window.sessionStorage.getItem(ACCESS_TOKEN_KEY);
 }
 
 
@@ -30,6 +30,6 @@ export function getAccessToken(): string | null {
  * @returns The access token
  */
 export function removeAccessToken(): void {
-    if (typeof window === "undefined") return;
-    window.sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+  if (typeof window === "undefined") return;
+  window.sessionStorage.removeItem(ACCESS_TOKEN_KEY);
 }

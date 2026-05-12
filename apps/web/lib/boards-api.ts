@@ -1,25 +1,16 @@
 import { apiFetch, DeletionMessageResponse } from "./api";
-
-/**
- * Data for the user response.
- */
-export type UserResponse = {
-    id: string;
-    displayName: string;
-    email: string;
-}
-
+import { UserResponse } from "./users-api";
 
 
 /**
  * Data for the board response.
  */
 export type BoardResponse = {
-    id: string;
-    title: string;
-    description: string;
-    owner: UserResponse;
-    members: UserResponse[];
+  id: string;
+  title: string;
+  description: string;
+  owner: UserResponse;
+  members: UserResponse[];
 }
 
 
@@ -28,8 +19,8 @@ export type BoardResponse = {
  * Data for create board request.
  */
 export type CreateBoardRequest = {
-    title: string;
-    description?: string;
+  title: string;
+  description?: string;
 }
 
 
@@ -38,10 +29,10 @@ export type CreateBoardRequest = {
  * Data for update board request.
  */
 export type UpdateBoardRequest = {
-    id: string;
-    title?: string;
-    description?: string;
-    password: string;
+  id: string;
+  title?: string;
+  description?: string;
+  password: string;
 }
 
 
@@ -50,9 +41,9 @@ export type UpdateBoardRequest = {
  * Data for delete board request.
  */
 export type DeleteBoardRequest = {
-    id: string;
-    password: string;
-    permanently?: boolean;
+  id: string;
+  password: string;
+  permanently?: boolean;
 }
 
 
@@ -63,10 +54,10 @@ export type DeleteBoardRequest = {
  * @returns The boards
  */
 export async function getBoards(token: string): Promise<BoardResponse[] | null> {
-    return apiFetch<BoardResponse[]>("/boards", {
-        method: "GET",
-        token,
-    });
+  return apiFetch<BoardResponse[]>("/boards", {
+    method: "GET",
+    token,
+  });
 }
 
 
@@ -78,11 +69,11 @@ export async function getBoards(token: string): Promise<BoardResponse[] | null> 
  * @returns The new board
  */
 export async function createBoard(data: CreateBoardRequest, token: string): Promise<BoardResponse | null> {
-    return apiFetch<BoardResponse>("/boards", {
-        method: "POST",
-        token,
-        body: JSON.stringify(data),
-    });
+  return apiFetch<BoardResponse>("/boards", {
+    method: "POST",
+    token,
+    body: JSON.stringify(data),
+  });
 }
 
 
@@ -95,11 +86,11 @@ export async function createBoard(data: CreateBoardRequest, token: string): Prom
  * @returns The updated board
  */
 export async function updateBoard(data: UpdateBoardRequest, token: string): Promise<BoardResponse | null> {
-    return apiFetch<BoardResponse>("/boards", {
-        method: "PATCH",
-        token,
-        body: JSON.stringify(data),
-    });
+  return apiFetch<BoardResponse>("/boards", {
+    method: "PATCH",
+    token,
+    body: JSON.stringify(data),
+  });
 }
 
 
