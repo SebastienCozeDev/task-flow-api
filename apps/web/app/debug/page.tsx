@@ -1,9 +1,9 @@
 import AuthDebug from "@/components/auth-debug";
 
-export default function DebugAuthPage() {
+export default function DebugPage() {
     return (
         <main>
-            <h1>DebugAuthPage</h1>
+            <h1>DebugPage</h1>
             <AuthDebug />
         </main>
     );

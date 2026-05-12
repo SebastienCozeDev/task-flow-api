@@ -5,7 +5,9 @@ import { login, register } from "@/lib/auth-api";
 export default function AuthDebug() {
   return (
     <div>
+      <h2>Auth</h2>
       <button
+        className="btn"
         onClick={async () => {
           const result = await login({
             email: "john.doe@example.com",
@@ -18,6 +20,7 @@ export default function AuthDebug() {
       </button>
 
       <button
+        className="btn"
         onClick={async () => {
           const result = await register({
             displayName: "John Doe",
