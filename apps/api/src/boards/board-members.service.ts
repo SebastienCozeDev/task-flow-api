@@ -143,14 +143,14 @@ export class BoardMembersService {
         return await Promise.all(
             boardIds.map(async boardId => {
                 return this.boardsService.toDetailResponseDto(
-                    await this.boardsService.findById(boardId),
+                    await this.boardsService.findById(boardId, { relations: ["owner"] }),
                     await this.findByAllBoardId(boardId),
                 );
             })
         );
     }
 
-    async createBoard(currentUserId: string, createBoardDto: CreateBoardDto): Promise<BoardResponseDto> {
+    async createBoard(currentUserId: string, createBoardDto: CreateBoardDto): Promise<BoardDetailResponseDto> {
         const numberOfBoard = (await this.findBoardByOwnerId(currentUserId)).length;
         const savedBoard = await this.boardsService.create(currentUserId, createBoardDto, numberOfBoard);
         const boardMember = this.boardMembersRespository.create({
@@ -159,7 +159,7 @@ export class BoardMembersService {
             role: BoardMemberRole.OWNER,
             invitedById: currentUserId,
         })
-        await this.boardMembersRespository.save(boardMember);
-        return savedBoard;
+        const member = await this.boardMembersRespository.save(boardMember);
+        return this.findBoardByIdWithDetail(savedBoard.id);
     }
 }

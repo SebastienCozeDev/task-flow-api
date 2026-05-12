@@ -74,7 +74,7 @@ export class BoardsService {
     async create(userId: string, createBoardDto: CreateBoardDto, numberOfBoard: number): Promise<BoardResponseDto> {
         const user = await this.usersService.findById(userId);
         if (user.maxBoard <= numberOfBoard)
-            throw new ForbiddenException(`You can't create more board (MAX: ${user.maxBoard}`);
+            throw new ForbiddenException(`You can't create more board (MAX: ${user.maxBoard})`);
         const board = this.boardsRepository.create({
             ...createBoardDto,
             ownerId: userId,

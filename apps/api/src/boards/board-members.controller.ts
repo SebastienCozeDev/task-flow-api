@@ -58,7 +58,7 @@ export class BoardMembersController {
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Delete(':userId/members/:boardId')
+    @Delete(':boardId/members/:userId')
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Delete a specifc member of a specific board' })
     delete(@Request() req: any, @Param('boardId') boardId: string, @Param('userId') userId: string): Promise<DeletionResponseDto> {

@@ -57,7 +57,7 @@ export class BoardsController {
     @Post()
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Create a new board' })
-    create(@Request() req: any, @Body() createBoardDto: CreateBoardDto): Promise<BoardResponseDto> {
+    create(@Request() req: any, @Body() createBoardDto: CreateBoardDto): Promise<BoardDetailResponseDto> {
         return this.boardMembersService.createBoard(req.user.userId, createBoardDto);
     }
 

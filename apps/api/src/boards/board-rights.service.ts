@@ -106,10 +106,10 @@ export class BoardRightsService {
      */
     async hasRightToInviteMemberInBoard(board: Board, userId: string, invitedUserId: string): Promise<BoardMember> {
         const boardMember = await this.isMemberOfBoard(board, userId);
-        const invitedMember = await this.isMemberOfBoard(board, invitedUserId);
+        const invitedMember = await this.boardMembersRespository.findOneBy({ boardId: board.id, userId: invitedUserId });
         if (invitedMember)
             throw new ForbiddenException("The selected user is already invited")
-        if ([BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER].includes(boardMember.role))
+        if (![BoardMemberRole.OWNER, BoardMemberRole.MAINTAINER].includes(boardMember.role))
             throw new ForbiddenException("You are not a owner or maintainer of this board");
         return boardMember;
     }
