@@ -143,7 +143,7 @@ export class BoardMembersService {
         return await Promise.all(
             boardIds.map(async boardId => {
                 return this.boardsService.toDetailResponseDto(
-                    await this.boardsService.findById(boardId),
+                    await this.boardsService.findById(boardId, { relations: ["owner"] }),
                     await this.findByAllBoardId(boardId),
                 );
             })
@@ -160,6 +160,6 @@ export class BoardMembersService {
             invitedById: currentUserId,
         })
         await this.boardMembersRespository.save(boardMember);
-        return savedBoard;
+        return this.boardsService.toResponseDto(await this.boardsService.findById(savedBoard.id));
     }
 }
