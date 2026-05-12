@@ -68,6 +68,10 @@ This API uses global validation with:
     }
   ));
   SwaggerModule.setup('docs', app, document);
+  app.enableCors({
+    origin: process.env.WEB_ORIGIN_CORS,
+    credentials: true,
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 
