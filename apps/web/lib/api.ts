@@ -5,6 +5,16 @@ type ApiFetchOptions = RequestInit & {
 }
 
 
+
+/**
+ * Deletion message response type.
+ */
+export type DeletionMessageResponse = {
+    message: string;
+}
+
+
+
 export async function apiFetch<T>(
     endpoint: string,
     options: ApiFetchOptions = {}
