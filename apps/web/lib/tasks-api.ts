@@ -1,4 +1,4 @@
-import { apiFetch, createAPIEntity } from "./api";
+import { apiFetch, createAPIEntity, deleteAPIEntity, DeletionMessageResponse, updateAPIEntity } from "./api";
 import { UserResponse } from "./users-api";
 
 /**
@@ -92,4 +92,22 @@ export async function getTasksOfBoard(boardId: string, token: string): Promise<T
  */
 export async function createTask(data: CreateTaskRequest, token: string): Promise<ShortTaskResponse | null> {
   return createAPIEntity<ShortTaskResponse>("/tasks", data, token);
+}
+
+
+
+/**
+ * Update a task with API.
+ * @param data The data used to update the task
+ * @param token The access token
+ * @returns The updated task
+ */
+export async function updateTask(data: UpdateTaskRequest, token: string): Promise<ShortTaskResponse | null> {
+  return updateAPIEntity<ShortTaskResponse>("/tasks", data, token);
+}
+
+
+
+export async function deleteTask(taskId: string, token: string): Promise<DeletionMessageResponse | null> {
+  return deleteAPIEntity(`/tasks/${taskId}`, {}, token);
 }

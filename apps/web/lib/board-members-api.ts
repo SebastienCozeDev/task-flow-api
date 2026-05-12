@@ -1,4 +1,4 @@
-import { apiFetch, createAPIEntity, DeletionMessageResponse } from "./api";
+import { apiFetch, createAPIEntity, deleteAPIEntity, DeletionMessageResponse, updateAPIEntity } from "./api";
 import { UserResponse } from "./users-api";
 
 export enum BoardMemberRole {
@@ -74,11 +74,7 @@ export async function inviteBoardMember(data: InviteBoardMemberRequest, token: s
  * @returns The updated board member
  */
 export async function updateBoardMember(data: UpdateBoardMemberRequest, token: string): Promise<ShortBoardMemberResponse | null> {
-  return apiFetch<ShortBoardMemberResponse>("/boards/members", {
-    method: "PATCH",
-    token,
-    body: JSON.stringify(data),
-  });
+  return updateAPIEntity<ShortBoardMemberResponse>("/boards/members", data, token);
 }
 
 
@@ -91,8 +87,5 @@ export async function updateBoardMember(data: UpdateBoardMemberRequest, token: s
  * @returns The deletion message
  */
 export async function deleteBoardMember(boardId: string, userId: string, token: string): Promise<DeletionMessageResponse | null> {
-  return apiFetch<DeletionMessageResponse>(`/boards/${boardId}/members/${userId}`, {
-    method: "PATCH",
-    token,
-  });
+  return deleteAPIEntity(`/boards/${boardId}/members/${userId}`, {}, token);
 }

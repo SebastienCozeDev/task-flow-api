@@ -1,4 +1,4 @@
-import { apiFetch, createAPIEntity, DeletionMessageResponse } from "./api";
+import { apiFetch, createAPIEntity, deleteAPIEntity, DeletionMessageResponse, updateAPIEntity } from "./api";
 import { BoardMemberResponse } from "./board-members-api";
 import { UserResponse } from "./users-api";
 
@@ -83,11 +83,7 @@ export async function createBoard(data: CreateBoardRequest, token: string): Prom
  * @returns The updated board
  */
 export async function updateBoard(data: UpdateBoardRequest, token: string): Promise<BoardResponse | null> {
-  return apiFetch<BoardResponse>("/boards", {
-    method: "PATCH",
-    token,
-    body: JSON.stringify(data),
-  });
+  return updateAPIEntity<BoardResponse>("/boards", data, token);
 }
 
 
@@ -99,9 +95,5 @@ export async function updateBoard(data: UpdateBoardRequest, token: string): Prom
  * @returns The deletion message
  */
 export async function deleteBoard(data: DeleteBoardRequest, token: string): Promise<DeletionMessageResponse | null> {
-    return apiFetch<DeletionMessageResponse>("/boards", {
-        method: "DELETE",
-        token,
-        body: JSON.stringify(data),
-    });
+  return deleteAPIEntity("/boards", data, token)
 }

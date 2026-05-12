@@ -18,7 +18,7 @@ export type DeletionMessageResponse = {
 /**
  * Create an API entity.
  * @param path The path of the endpoint
- * @param data The necessary data to create this entity
+ * @param data The necessary data to used create this entity
  * @param token The access token
  * @returns The created entity
  */
@@ -27,6 +27,39 @@ export async function createAPIEntity<T>(path: string, data: {}, token: string) 
     method: "POST",
     token,
     body: JSON.stringify(data),
+  });
+}
+
+
+
+/**
+ * Update an API entity.
+ * @param path The path of the endpoint
+ * @param data The necessary data used to update this entity
+ * @param token The access token
+ * @returns The updated entity
+ */
+export async function updateAPIEntity<T>(path: string, data: {}, token: string) {
+  return apiFetch<T>(path, {
+    method: "PATCH",
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+
+
+/**
+ * Delete an API entity.
+ * @param path The path of the endpoint
+ * @param token The access token
+ * @returns The deletion message
+ */
+export async function deleteAPIEntity(path: string, data: {}, token: string): Promise<DeletionMessageResponse | null> {
+  return apiFetch<DeletionMessageResponse>(path, {
+    method: "PATCH",
+    token,
+    ...(data ? { body: JSON.stringify(data) }: {}),
   });
 }
 
