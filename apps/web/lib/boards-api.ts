@@ -1,4 +1,5 @@
 import { apiFetch, DeletionMessageResponse } from "./api";
+import { BoardMemberResponse } from "./board-members-api";
 import { UserResponse } from "./users-api";
 
 
@@ -10,7 +11,7 @@ export type BoardResponse = {
   title: string;
   description: string;
   owner: UserResponse;
-  members: UserResponse[];
+  members: BoardMemberResponse[];
 }
 
 
