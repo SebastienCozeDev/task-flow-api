@@ -150,7 +150,7 @@ export class BoardMembersService {
         );
     }
 
-    async createBoard(currentUserId: string, createBoardDto: CreateBoardDto): Promise<BoardResponseDto> {
+    async createBoard(currentUserId: string, createBoardDto: CreateBoardDto): Promise<BoardDetailResponseDto> {
         const numberOfBoard = (await this.findBoardByOwnerId(currentUserId)).length;
         const savedBoard = await this.boardsService.create(currentUserId, createBoardDto, numberOfBoard);
         const boardMember = this.boardMembersRespository.create({
@@ -159,7 +159,7 @@ export class BoardMembersService {
             role: BoardMemberRole.OWNER,
             invitedById: currentUserId,
         })
-        await this.boardMembersRespository.save(boardMember);
-        return this.boardsService.toResponseDto(await this.boardsService.findById(savedBoard.id));
+        const member = await this.boardMembersRespository.save(boardMember);
+        return this.findBoardByIdWithDetail(savedBoard.id);
     }
 }
