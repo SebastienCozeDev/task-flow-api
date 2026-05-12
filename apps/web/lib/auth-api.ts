@@ -3,7 +3,7 @@ import { apiFetch } from "./api";
 /**
  * Data for the login request.
  */
-type LoginRequest = {
+export type LoginRequest = {
     email: string;
     password: string;
 }
@@ -13,7 +13,7 @@ type LoginRequest = {
 /**
  * Data for the login response.
  */
-type LoginResponse = {
+export type LoginResponse = {
     access_token: string;
 }
 
@@ -22,7 +22,7 @@ type LoginResponse = {
 /**
  * Data for the register request.
  */
-type RegisterRequest = {
+export type RegisterRequest = {
     displayName: string;
     email: string;
     password: string;
@@ -33,7 +33,7 @@ type RegisterRequest = {
 /**
  * Data for the register response.
  */
-type RegisterResponse = {
+export type RegisterResponse = {
     id: string;
     displayName: string;
     email: string,
