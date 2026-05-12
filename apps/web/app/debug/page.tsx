@@ -1,9 +1,9 @@
 import AuthDebug from "@/components/auth-debug";
+import ThemeController from "@/components/theme-controller";
 
 export default function DebugPage() {
     return (
         <main>
-            <h1>DebugPage</h1>
             <AuthDebug />
         </main>
     );
