@@ -1,7 +1,4 @@
-const API_URL =
-  process.env.NODE_ENV === "production"
-    ? process.env.NEXT_PUBLIC_API_PROD_DOMAIN
-    : process.env.NEXT_PUBLIC_API_DEV_DOMAIN;
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 type ApiFetchOptions = RequestInit & {
     token?: string;
