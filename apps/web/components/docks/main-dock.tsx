@@ -4,7 +4,7 @@ import { homeRoutes } from "@/lib/routes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function Dock() {
+export default function MainDock() {
   const pathname = usePathname();
 
   const isActive = (link: string) => {
