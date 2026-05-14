@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { logoutUser } from "@/lib/auth";
 
-export default function LoginPage() {
+export default function LogoutPage() {
   const router = useRouter();
   logoutUser();
   router.replace("/login");
