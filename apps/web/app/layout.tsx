@@ -24,10 +24,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  //  dark:bg-black
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased bg-zinc-50 dark:bg-black`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased bg-zinc-50`}
     >
       <body className="min-h-full flex flex-col">
         <AuthProvider>
