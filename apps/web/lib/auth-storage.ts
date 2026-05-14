@@ -33,3 +33,13 @@ export function removeAccessToken(): void {
   if (typeof window === "undefined") return;
   window.sessionStorage.removeItem(ACCESS_TOKEN_KEY);
 }
+
+
+
+/**
+ * Return true if current user is authenticated.
+ * @returns true or false
+ */
+export function isAuthenticated(): boolean {
+  return !!getAccessToken();
+}

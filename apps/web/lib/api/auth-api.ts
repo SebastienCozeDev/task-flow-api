@@ -51,7 +51,7 @@ export async function login(data: LoginRequest): Promise<LoginResponse | null> {
  * @returns The register response
  */
 export async function register(data: RegisterRequest): Promise<UserResponse | null> {
-  return apiFetch<RegisterResponse>("/auth/register", {
+  return apiFetch<UserResponse>("/auth/register", {
     method: "POST",
     body: JSON.stringify(data),
   });
