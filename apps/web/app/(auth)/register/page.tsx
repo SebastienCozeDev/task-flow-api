@@ -54,13 +54,13 @@ export default function RegisterPage() {
   return (
     <main className="min-h-screen flex items-center justify-center p-4">
       <Form onSubmit={handleSubmit} error={error}>
-        <Legend title="Log In" />
+        <Legend title="Register" />
         <DisplayNameInput value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
         <EmailInput value={email} onChange={(e) => setEmail(e.target.value)} />
         <PasswordInput onChange={(e) => setPassword(e.target.value)} />
         <PasswordInput onChange={(e) => setSecondPassword(e.target.value)} />
         <div><Link href="/login" className="link link-hover">Already have an account? Log in!</Link></div>
-        <SubmitButton title="Log In" />
+        <SubmitButton title="Register" />
       </Form>
     </main>
   );
