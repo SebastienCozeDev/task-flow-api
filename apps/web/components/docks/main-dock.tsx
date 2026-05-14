@@ -11,19 +11,21 @@ export default function MainDock() {
     if (link === "/") return pathname === "/";
     return pathname === link || pathname.startsWith(`${link}/`);
   };
-
   return (
-    <div className="dock dock-lg max-w-screen-lg mx-auto w-full">
-      {homeRoutes.map((route) => (
-        <Link
-          key={route.link}
-          href={route.link}
-          className={isActive(route.link) ? "dock-active" : ""}
-        >
-          {route.svg}
-          <span className="dock-label">{route.title}</span>
-        </Link>
-      ))}
-    </div>
+    <>
+      <div className="dock dock-lg"></div>
+      <div className="dock dock-lg max-w-screen-lg mx-auto w-full">
+        {homeRoutes.map((route) => (
+          <Link
+            key={route.link}
+            href={route.link}
+            className={isActive(route.link) ? "dock-active" : ""}
+          >
+            {route.svg}
+            <span className="dock-label">{route.title}</span>
+          </Link>
+        ))}
+      </div>
+    </>
   );
 }
