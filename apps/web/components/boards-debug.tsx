@@ -1,7 +1,7 @@
 "use client";
 
+import { getBoards } from "@/lib/api/boards-api";
 import { getAccessToken } from "@/lib/auth-storage";
-import { getBoards } from "@/lib/boards-api";
 
 export default function BoardsDebug() {
   return (

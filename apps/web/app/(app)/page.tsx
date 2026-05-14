@@ -1,3 +1,4 @@
+import AuthGuard from "@/components/auth/auth-guard";
 import Image from "next/image";
 
 export default function Home() {
