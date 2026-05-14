@@ -7,5 +7,6 @@ export default function LoginPage() {
   const router = useRouter();
   logoutUser();
   router.replace("/login");
+  location.href = "/login";
   return null;
 }
