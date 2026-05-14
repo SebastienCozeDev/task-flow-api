@@ -1,4 +1,4 @@
-import { login, LoginRequest } from "./api/auth-api";
+import { login, LoginRequest, register, RegisterRequest } from "./api/auth-api";
 import { removeAccessToken, saveAccessToken } from "./auth-storage";
 
 
@@ -18,6 +18,24 @@ export async function loginUser(data: LoginRequest): Promise<boolean> {
 
     saveAccessToken(response.access_token);
     return true;
+}
+
+
+
+/**
+ * Register and login the current user.
+ * @param data The data used to register
+ * @returns true or false
+ */
+export async function registerUser(data: RegisterRequest): Promise<boolean> {
+    const response = await register(data);
+    
+    if (!response?.displayName) {
+        removeAccessToken
+        return false
+    }
+
+    return loginUser({ email: data.email, password: data.password });
 }
 
 
