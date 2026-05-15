@@ -1,5 +1,6 @@
 "use client";
 
+import ColumnBoard from "@/components/boards/column-board";
 import TaskCard from "@/components/cards/task-card";
 import TasksDock from "@/components/docks/tasks-dock";
 import { getAssignedTasks, TaskResponse } from "@/lib/api/tasks-api";
@@ -89,31 +90,8 @@ export default function MyTodoTasksPage() {
           {BOARD_COLUMNS.map((column) => {
             const columnTasks =
               tasksByState[column.key as keyof typeof tasksByState];
-
             return (
-              <section
-                key={column.key}
-                className="rounded-box bg-base-200 p-3"
-              >
-                <div className="mb-3 flex items-center justify-between">
-                  <h2 className="font-semibold">{column.label}</h2>
-                  <span className="badge badge-neutral badge-sm">
-                    {columnTasks.length}
-                  </span>
-                </div>
-
-                <div className="flex max-h-[calc(100vh-220px)] flex-col gap-3 overflow-y-auto">
-                  {columnTasks.length > 0 ? (
-                    columnTasks.map((task) => (
-                      <TaskCard key={task.id} task={task} />
-                    ))
-                  ) : (
-                    <div className="rounded-box border border-dashed border-base-300 bg-base-100 p-4 text-sm text-base-content/60">
-                      No task
-                    </div>
-                  )}
-                </div>
-              </section>
+              <ColumnBoard key={column.key} label={column.label} tasks={columnTasks} />
             );
           })}
         </div>

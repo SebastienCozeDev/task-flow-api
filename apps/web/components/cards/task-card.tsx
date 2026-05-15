@@ -1,6 +1,6 @@
 "use client";
 
-import { TaskInfo, TaskResponse } from "@/lib/api/tasks-api";
+import { TaskResponse } from "@/lib/api/tasks-api";
 
 type TaskCardData = {
   task: TaskResponse
@@ -9,7 +9,7 @@ type TaskCardData = {
 export default function TaskCard(data: TaskCardData) {
   return (
     <>
-      <div key={data.task.id} className="card bg-base-100 w-full shadow-sm mx-auto">
+      <div className="card bg-base-100 w-full shadow-sm mx-auto">
         {
           data.task.imageLink
           ? (
