@@ -4,6 +4,7 @@ import { TaskResponse } from "@/lib/api/tasks-api";
 
 type TaskCardData = {
   task: TaskResponse
+  showState?: boolean
 }
 
 export default function TaskCard(data: TaskCardData) {
@@ -25,7 +26,7 @@ export default function TaskCard(data: TaskCardData) {
           <h2 className="card-title">
             {data.task.title}
             {
-              data.task.state
+              data.showState && data.task.state
               ? <div className="badge badge-secondary">{data.task.state.toUpperCase()}</div>
               : null
             }

@@ -64,7 +64,7 @@ export default function MyAssignedTasksPage() {
         <main className="mx-auto mb-32 w-full max-w-screen-xl px-4">
           <div className="grid grid-cols-1 gap-2">
             {tasks.map((task) => (
-              <TaskCard key={task.id} task={task} />
+              <TaskCard key={task.id} task={task} showState={true} />
             ))}
           </div>
         </main>
