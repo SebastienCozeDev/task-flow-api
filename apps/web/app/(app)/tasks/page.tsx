@@ -8,7 +8,7 @@ import { getAccessToken } from "@/lib/auth-storage";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-export default function MyTodoTasksPage() {
+export default function MyAssignedTasksPage() {
   const router = useRouter();
 
   const [tasks, setTasks] = useState<TaskResponse[]>([]);
