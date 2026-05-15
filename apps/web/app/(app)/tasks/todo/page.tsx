@@ -1,25 +1,12 @@
 "use client";
 
-import ColumnBoard from "@/components/boards/column-board";
+import DesktopBoard from "@/components/boards/desktop-board";
 import TaskCard from "@/components/cards/task-card";
 import TasksDock from "@/components/docks/tasks-dock";
 import { getAssignedTasks, TaskResponse } from "@/lib/api/tasks-api";
 import { getAccessToken } from "@/lib/auth-storage";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-
-type BoardColumn = {
-  key: string;
-  label: string;
-};
-
-const BOARD_COLUMNS: BoardColumn[] = [
-  { key: "draft", label: "Draft" },
-  { key: "todo", label: "Todo" },
-  { key: "in_progress", label: "In progress" },
-  { key: "done", label: "Done" },
-  { key: "archived", label: "Archived" },
-];
 
 export default function MyTodoTasksPage() {
   const router = useRouter();
@@ -85,17 +72,16 @@ export default function MyTodoTasksPage() {
       </div>
 
       {/* Desktop board */}
-      <main className="mx-auto hidden w-full max-w-[2000px] min-w-[1400px] px-4 pt-16 lg:block">
-        <div className="grid grid-cols-5 gap-4">
-          {BOARD_COLUMNS.map((column) => {
-            const columnTasks =
-              tasksByState[column.key as keyof typeof tasksByState];
-            return (
-              <ColumnBoard key={column.key} label={column.label} tasks={columnTasks} />
-            );
-          })}
-        </div>
-      </main>
+      <DesktopBoard
+        boardColumns={[
+          { key: "draft", label: "Draft" },
+          { key: "todo", label: "Todo" },
+          { key: "in_progress", label: "In progress" },
+          { key: "done", label: "Done" },
+          { key: "archived", label: "Archived" },
+        ]}
+        tasksByState={tasksByState}
+      />
     </>
   );
 }
