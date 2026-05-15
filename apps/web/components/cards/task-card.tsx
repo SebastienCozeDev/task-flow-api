@@ -30,7 +30,7 @@ export default function TaskCard(data: TaskCardData) {
               : null
             }
           </h2>
-          <p>{data.task.decription}</p>
+          <p>{data.task.description}</p>
           <div className="card-actions justify-end">
             <div className="badge badge-outline">Fashion</div>
             <div className="badge badge-outline">Products</div>

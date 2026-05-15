@@ -6,7 +6,7 @@ import { UserResponse } from "./users-api";
  */
 export type TaskInfo = {
   state?: string;
-  decription?: string;
+  description?: string;
   imageLink?: string;
   moreLink?: string;
   dueDate?: string;
