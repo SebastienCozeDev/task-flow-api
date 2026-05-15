@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString, MaxLength, maxLength } from 'class-validator';
 import { TaskDto } from './task.dto';
 import { TaskState } from '../entities/task.entity';
 
@@ -11,6 +11,7 @@ export class CreateTaskDto extends TaskDto {
 
     @ApiProperty({ example: 'My Super Task', description: 'The title of the task' })
     @IsString()
+    @MaxLength(120)
     title: string;
 
     @ApiPropertyOptional({ example: 'draft', description: 'The state of the task' })
