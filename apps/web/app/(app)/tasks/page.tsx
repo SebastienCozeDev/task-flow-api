@@ -2,7 +2,6 @@
 
 import DesktopBoard from "@/components/boards/desktop-board";
 import TaskCard from "@/components/cards/task-card";
-import TasksDock from "@/components/docks/tasks-dock";
 import { getAssignedTasks, TaskResponse } from "@/lib/api/tasks-api";
 import { getAccessToken } from "@/lib/auth-storage";
 import { useRouter } from "next/navigation";
@@ -68,7 +67,6 @@ export default function MyAssignedTasksPage() {
             ))}
           </div>
         </main>
-        <TasksDock />
       </div>
 
       {/* Desktop board */}
