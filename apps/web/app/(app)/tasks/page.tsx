@@ -7,6 +7,18 @@ import { getAccessToken } from "@/lib/auth-storage";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+
+
+export type TasksByState = {
+  draft: TaskResponse[];
+  todo: TaskResponse[];
+  inProgress: TaskResponse[];
+  done: TaskResponse[];
+  archived: TaskResponse[];
+}
+
+
+
 export default function MyAssignedTasksPage() {
   const router = useRouter();
 
@@ -42,11 +54,11 @@ export default function MyAssignedTasksPage() {
     loadTasks();
   }, [router]);
 
-  const tasksByState = useMemo(() => {
+  const tasksByState = useMemo<TasksByState>(() => {
     return {
       draft: tasks.filter((task) => task.state === "draft"),
       todo: tasks.filter((task) => task.state === "todo"),
-      in_progress: tasks.filter((task) => task.state === "in_progress"),
+      inProgress: tasks.filter((task) => task.state === "in_progress"),
       done: tasks.filter((task) => task.state === "done"),
       archived: tasks.filter((task) => task.state === "archived"),
     };
@@ -79,6 +91,7 @@ export default function MyAssignedTasksPage() {
           { key: "archived", label: "Archived" },
         ]}
         tasksByState={tasksByState}
+        setTasks={setTasks}
       />
     </>
   );

@@ -1,7 +1,8 @@
 "use client";
 
-import { TaskResponse } from "@/lib/api/tasks-api";
+import { Dispatch, SetStateAction } from "react";
 import ColumnBoard from "./column-board";
+import { TaskResponse } from "@/lib/api/tasks-api";
 
 type BoardColumn = {
   key: string;
@@ -11,6 +12,7 @@ type BoardColumn = {
 type DesktopBoardData = {
   boardColumns: BoardColumn[];
   tasksByState: {};
+  setTasks: Dispatch<SetStateAction<TaskResponse[]>>;
 }
 
 export default function DesktopBoard(data: DesktopBoardData) {
