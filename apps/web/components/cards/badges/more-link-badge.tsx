@@ -1,6 +1,5 @@
 "use client";
 
-import { TaskResponse } from "@/lib/api/tasks-api";
 import Link from "next/link";
 
 type MoreLinkBadgeData = {
