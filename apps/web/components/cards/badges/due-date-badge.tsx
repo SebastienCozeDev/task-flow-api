@@ -2,13 +2,13 @@
 
 import { getTodayAsIsoDate } from "@/lib/utils";
 
-type DueDateBadgeData = {
+type DueDateBadgeProps = {
   date: string;
 }
 
-export default function DueDateBadge(data: DueDateBadgeData) {
+export default function DueDateBadge(props: DueDateBadgeProps) {
   const today = getTodayAsIsoDate();
-  const isDueNowOrLate = data.date <= today;
+  const isDueNowOrLate = props.date <= today;
 
   return (
     <div className={`badge ${isDueNowOrLate ? "badge-error" : "badge-outline"}`}>
@@ -26,7 +26,7 @@ export default function DueDateBadge(data: DueDateBadgeData) {
           d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
         />
       </svg>
-      {data.date}
+      {props.date}
     </div>
   );
 }

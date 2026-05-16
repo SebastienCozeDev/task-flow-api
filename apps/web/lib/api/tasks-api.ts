@@ -1,4 +1,5 @@
 import { createAPIEntity, deleteAPIEntity, DeletionMessageResponse, getAPIEntities, updateAPIEntity } from "./api";
+import { ShortBoardResponse } from "./boards-api";
 import { UserResponse } from "./users-api";
 
 /**
@@ -9,7 +10,7 @@ export type TaskInfo = {
   description?: string;
   imageLink?: string;
   moreLink?: string;
-  dueDate?: string;
+  dueDate?: string | null;
 }
 
 
@@ -31,6 +32,7 @@ export type TaskResponse = ShortTaskResponse & {
   createdBy: UserResponse;
   lastUpdatedBy: UserResponse;
   assignedTo: UserResponse;
+  board?: ShortBoardResponse;
 }
 
 
@@ -50,6 +52,7 @@ export type CreateTaskRequest = TaskInfo & {
  * Data for update task request.
  */
 export type UpdateTaskRequest = TaskInfo & {
+  id: string;
   title?: string;
   assignedToId?: string;
 }

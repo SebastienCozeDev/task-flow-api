@@ -3,6 +3,19 @@ import { BoardMemberResponse } from "./board-members-api";
 import { UserResponse } from "./users-api";
 
 
+
+/**
+ * Data for the short board response.
+ */
+export type ShortBoardResponse = {
+  id: string;
+  title: string;
+  description: string;
+  ownerId: string;
+}
+
+
+
 /**
  * Data for the board response.
  */

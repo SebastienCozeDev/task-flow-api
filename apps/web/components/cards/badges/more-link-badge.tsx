@@ -1,16 +1,15 @@
 "use client";
 
-import { TaskResponse } from "@/lib/api/tasks-api";
 import Link from "next/link";
 
-type MoreLinkBadgeData = {
+type MoreLinkBadgeProps = {
   href: string;
 }
 
-export default function MoreLinkBadge(data: MoreLinkBadgeData) {
+export default function MoreLinkBadge(props: MoreLinkBadgeProps) {
   return (
     <Link
-      href={data.href}
+      href={props.href}
       target="_blank"
       referrerPolicy="no-referrer"
       className="badge badge-outline"

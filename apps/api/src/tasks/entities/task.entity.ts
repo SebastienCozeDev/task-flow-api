@@ -16,7 +16,7 @@ import {
 export enum TaskState {
     DRAFT = 'draft',
     TODO = 'todo',
-    IN_PROGRESS = 'in progress',
+    IN_PROGRESS = 'inProgress',
     DONE = 'done',
     ARCHIVED = 'archived',
 }

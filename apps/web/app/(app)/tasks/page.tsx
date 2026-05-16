@@ -7,6 +7,20 @@ import { getAccessToken } from "@/lib/auth-storage";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+
+
+export type TaskBoardColumnKey =
+  | "draft"
+  | "todo"
+  | "inProgress"
+  | "done"
+  | "archived";
+
+
+
+export type TasksByState = Record<TaskBoardColumnKey, TaskResponse[]>;
+
+
 export default function MyAssignedTasksPage() {
   const router = useRouter();
 
@@ -19,6 +33,7 @@ export default function MyAssignedTasksPage() {
 
       if (!accessToken) {
         setTasks([]);
+        router.replace("/logout");
         setIsLoading(false);
         return;
       }
@@ -42,11 +57,11 @@ export default function MyAssignedTasksPage() {
     loadTasks();
   }, [router]);
 
-  const tasksByState = useMemo(() => {
+  const tasksByState = useMemo<TasksByState>(() => {
     return {
       draft: tasks.filter((task) => task.state === "draft"),
       todo: tasks.filter((task) => task.state === "todo"),
-      in_progress: tasks.filter((task) => task.state === "in_progress"),
+      inProgress: tasks.filter((task) => task.state === "inProgress"),
       done: tasks.filter((task) => task.state === "done"),
       archived: tasks.filter((task) => task.state === "archived"),
     };
@@ -74,11 +89,12 @@ export default function MyAssignedTasksPage() {
         boardColumns={[
           { key: "draft", label: "Draft" },
           { key: "todo", label: "Todo" },
-          { key: "in_progress", label: "In progress" },
+          { key: "inProgress", label: "In progress" },
           { key: "done", label: "Done" },
           { key: "archived", label: "Archived" },
         ]}
         tasksByState={tasksByState}
+        setTasks={setTasks}
       />
     </>
   );
