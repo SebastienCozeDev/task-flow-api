@@ -9,6 +9,15 @@ import { useEffect, useMemo, useState } from "react";
 
 
 
+export type TaskBoardColumnKey =
+  | "draft"
+  | "todo"
+  | "inProgress"
+  | "done"
+  | "archived";
+
+
+
 export type TasksByState = {
   draft: TaskResponse[];
   todo: TaskResponse[];
@@ -58,7 +67,7 @@ export default function MyAssignedTasksPage() {
     return {
       draft: tasks.filter((task) => task.state === "draft"),
       todo: tasks.filter((task) => task.state === "todo"),
-      inProgress: tasks.filter((task) => task.state === "in_progress"),
+      inProgress: tasks.filter((task) => task.state === "inProgress"),
       done: tasks.filter((task) => task.state === "done"),
       archived: tasks.filter((task) => task.state === "archived"),
     };
@@ -86,7 +95,7 @@ export default function MyAssignedTasksPage() {
         boardColumns={[
           { key: "draft", label: "Draft" },
           { key: "todo", label: "Todo" },
-          { key: "in_progress", label: "In progress" },
+          { key: "inProgress", label: "In progress" },
           { key: "done", label: "Done" },
           { key: "archived", label: "Archived" },
         ]}
