@@ -3,6 +3,7 @@ import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { UserResponseDto } from 'src/users/dto/user-response.dto';
 import { TaskDto } from './task.dto';
 import { TaskState } from '../entities/task.entity';
+import { BoardResponseDto } from 'src/boards/dto/board/board-response.dto';
 
 
 export class TaskDetailResponseDto extends TaskDto {
@@ -13,6 +14,10 @@ export class TaskDetailResponseDto extends TaskDto {
     @ApiProperty({ example: 'My Super Task', description: 'The title of the task' })
     @IsString()
     title: string;
+
+    @ApiPropertyOptional({ description: 'The ID of the board of the task' })
+    @IsOptional()
+    board?: BoardResponseDto;
 
     @ApiProperty({ example: 'draft', description: 'The state of the task' })
     @IsEnum(TaskState)

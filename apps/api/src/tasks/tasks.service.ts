@@ -40,6 +40,7 @@ export class TasksService {
         dto.createdBy = task.createdBy ? this.usersService.toResponseDto(task.createdBy) : undefined;
         dto.lastUpdatedBy = task.lastUpdatedBy ? this.usersService.toResponseDto(task.lastUpdatedBy) : undefined;
         dto.assignedTo = task.assignedTo ? this.usersService.toResponseDto(task.assignedTo) : undefined;
+        dto.board = task.board ? this.boardsService.toResponseDto(task.board) : undefined;
         return dto;
     }
 
@@ -51,7 +52,7 @@ export class TasksService {
     async findAllEntitiesByAssignedToId(assignedToId: string): Promise<Task[]> {
         return await this.tasksRepository.find({
             where: { assignedToId },
-            relations: ['createdBy', 'lastUpdatedBy', 'assignedTo'],
+            relations: ['createdBy', 'lastUpdatedBy', 'assignedTo', 'board'],
         });
     }
 
