@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 
-type MoreLinkBadgeData = {
+type MoreLinkBadgeProps = {
   href: string;
 }
 
-export default function MoreLinkBadge(data: MoreLinkBadgeData) {
+export default function MoreLinkBadge(data: MoreLinkBadgeProps) {
   return (
     <Link
       href={data.href}

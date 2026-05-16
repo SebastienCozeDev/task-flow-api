@@ -2,11 +2,11 @@
 
 import { getTodayAsIsoDate } from "@/lib/utils";
 
-type DueDateBadgeData = {
+type DueDateBadgeProps = {
   date: string;
 }
 
-export default function DueDateBadge(data: DueDateBadgeData) {
+export default function DueDateBadge(data: DueDateBadgeProps) {
   const today = getTodayAsIsoDate();
   const isDueNowOrLate = data.date <= today;
 
