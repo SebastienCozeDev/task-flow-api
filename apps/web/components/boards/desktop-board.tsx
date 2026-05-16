@@ -3,8 +3,10 @@
 import { DragDropProvider } from "@dnd-kit/react";
 import { Dispatch, SetStateAction } from "react";
 import ColumnBoard from "./column-board";
-import { TaskResponse } from "@/lib/api/tasks-api";
+import { TaskResponse, updateTask } from "@/lib/api/tasks-api";
 import { TaskBoardColumnKey } from "@/app/(app)/tasks/page";
+import { getAccessToken } from "@/lib/auth-storage";
+import { useRouter } from "next/navigation";
 
 type BoardColumn = {
   key: string;
@@ -18,10 +20,12 @@ type DesktopBoardProps = {
 }
 
 export default function DesktopBoard(props: DesktopBoardProps) {
+  const router = useRouter();
+
   return (
     <main className="mx-auto hidden w-full max-w-[2000px] min-w-[1400px] px-4 pt-16 lg:block">
       <DragDropProvider
-        onDragEnd={(event) => {
+        onDragEnd={async (event) => {
           if (event.canceled) return;
 
           const source = event.operation.source;
@@ -40,7 +44,23 @@ export default function DesktopBoard(props: DesktopBoardProps) {
             )
           )
 
-          // TODO: Call API after that
+          const accessToken = getAccessToken();
+          
+          if (!accessToken) {
+            router.replace("/logout");
+            return;
+          }
+
+          try {
+            const updatedTask = await updateTask({ id: taskId, state: newState }, accessToken);
+
+            if (!updatedTask) {
+              router.replace("/logout");
+              return;
+            }
+          } catch {
+            router.replace("/logout");
+          }
         }}
       >
         <div className="grid grid-cols-5 gap-4">

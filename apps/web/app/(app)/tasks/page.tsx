@@ -40,6 +40,7 @@ export default function MyAssignedTasksPage() {
 
       if (!accessToken) {
         setTasks([]);
+        router.replace("/logout");
         setIsLoading(false);
         return;
       }
