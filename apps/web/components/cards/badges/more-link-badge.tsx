@@ -6,7 +6,7 @@ type MoreLinkBadgeProps = {
   href: string;
 }
 
-export default function MoreLinkBadge(data: MoreLinkBadgeProps) {
+export default function MoreLinkBadge(props: MoreLinkBadgeProps) {
   return (
     <Link
       href={data.href}

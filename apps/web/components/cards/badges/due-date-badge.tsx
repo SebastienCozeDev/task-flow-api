@@ -6,7 +6,7 @@ type DueDateBadgeProps = {
   date: string;
 }
 
-export default function DueDateBadge(data: DueDateBadgeProps) {
+export default function DueDateBadge(props: DueDateBadgeProps) {
   const today = getTodayAsIsoDate();
   const isDueNowOrLate = data.date <= today;
 
