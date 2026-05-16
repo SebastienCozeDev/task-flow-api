@@ -9,7 +9,7 @@ type MoreLinkBadgeProps = {
 export default function MoreLinkBadge(props: MoreLinkBadgeProps) {
   return (
     <Link
-      href={data.href}
+      href={props.href}
       target="_blank"
       referrerPolicy="no-referrer"
       className="badge badge-outline"
