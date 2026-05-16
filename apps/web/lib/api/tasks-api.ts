@@ -1,4 +1,5 @@
 import { createAPIEntity, deleteAPIEntity, DeletionMessageResponse, getAPIEntities, updateAPIEntity } from "./api";
+import { ShortBoardResponse } from "./boards-api";
 import { UserResponse } from "./users-api";
 
 /**
@@ -31,6 +32,7 @@ export type TaskResponse = ShortTaskResponse & {
   createdBy: UserResponse;
   lastUpdatedBy: UserResponse;
   assignedTo: UserResponse;
+  board?: ShortBoardResponse;
 }
 
 

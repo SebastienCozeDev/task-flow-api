@@ -1,13 +1,13 @@
 "use client";
 
 import { TaskResponse } from "@/lib/api/tasks-api";
-import Link from "next/link";
 import MoreLinkBadge from "./badges/more-link-badge";
 import DueDateBadge from "./badges/due-date-badge";
+import BoardBadge from "./badges/board-badge";
 
 type TaskCardData = {
-  task: TaskResponse
-  showState?: boolean
+  task: TaskResponse;
+  showState?: boolean;
 }
 
 export default function TaskCard(data: TaskCardData) {
@@ -35,6 +35,11 @@ export default function TaskCard(data: TaskCardData) {
         </h2>
         <p>{data.task.description}</p>
         <div className="card-actions justify-end">
+          {
+            data.task.board
+            ? <BoardBadge title={data.task.board.title} href={`/boards/${data.task.board.id}`} />
+            : null
+          }
           {
             data.task.dueDate
             ? <DueDateBadge date={data.task.dueDate} />

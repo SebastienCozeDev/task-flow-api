@@ -21,7 +21,6 @@ export type TaskBoardColumnKey =
 export type TasksByState = Record<TaskBoardColumnKey, TaskResponse[]>;
 
 
-
 export default function MyAssignedTasksPage() {
   const router = useRouter();
 
