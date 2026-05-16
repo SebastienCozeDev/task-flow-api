@@ -18,13 +18,7 @@ export type TaskBoardColumnKey =
 
 
 
-export type TasksByState = {
-  draft: TaskResponse[];
-  todo: TaskResponse[];
-  inProgress: TaskResponse[];
-  done: TaskResponse[];
-  archived: TaskResponse[];
-}
+export type TasksByState = Record<TaskBoardColumnKey, TaskResponse[]>;
 
 
 
