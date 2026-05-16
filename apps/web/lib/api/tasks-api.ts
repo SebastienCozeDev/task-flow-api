@@ -9,7 +9,7 @@ export type TaskInfo = {
   description?: string;
   imageLink?: string;
   moreLink?: string;
-  dueDate?: string;
+  dueDate?: string | null;
 }
 
 
@@ -50,6 +50,7 @@ export type CreateTaskRequest = TaskInfo & {
  * Data for update task request.
  */
 export type UpdateTaskRequest = TaskInfo & {
+  id: string;
   title?: string;
   assignedToId?: string;
 }

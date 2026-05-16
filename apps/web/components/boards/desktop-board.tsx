@@ -3,7 +3,7 @@
 import { DragDropProvider } from "@dnd-kit/react";
 import { Dispatch, SetStateAction } from "react";
 import ColumnBoard from "./column-board";
-import { TaskResponse, updateTask } from "@/lib/api/tasks-api";
+import { TaskResponse, updateTask, UpdateTaskRequest } from "@/lib/api/tasks-api";
 import { TaskBoardColumnKey } from "@/app/(app)/tasks/page";
 import { getAccessToken } from "@/lib/auth-storage";
 import { useRouter } from "next/navigation";
@@ -39,7 +39,7 @@ export default function DesktopBoard(props: DesktopBoardProps) {
           props.setTasks((prevTasks) =>
             prevTasks.map((task) =>
               String(task.id) === taskId
-              ? {...task, state: newState}
+              ? {...task, state: newState, dueDate: ["done", "archived"].includes(newState) ? null : undefined }
               : task
             )
           )
@@ -52,7 +52,14 @@ export default function DesktopBoard(props: DesktopBoardProps) {
           }
 
           try {
-            const updatedTask = await updateTask({ id: taskId, state: newState }, accessToken);
+            const updatedTask = await updateTask(
+              {
+                id: taskId,
+                state: newState,
+                dueDate: ["done", "archived"].includes(newState) ? null : undefined,
+              },
+              accessToken
+            );
 
             if (!updatedTask) {
               router.replace("/logout");
