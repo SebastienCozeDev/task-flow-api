@@ -34,11 +34,11 @@ export default function RegisterPage() {
     try {
       const ok = await registerUser({ displayName, email, password });
       if (!ok) {
-        setError("Email invalide ou mot de passe trop court.");
+        setError("Invalid email address or password too short.");
         return;
       }
     } catch (e) {
-        setError("Email invalide ou mot de passe trop court.");
+        setError("Invalid email address or password too short.");
       return;
     }
 
