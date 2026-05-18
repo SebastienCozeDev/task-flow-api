@@ -45,13 +45,13 @@ export default function SettingsPage() {
           <Setting
             title="Edit Profile"
             description="Update your personal information and preferences."
-            href="/edit-profile"
+            href="/me/edit"
             svg={<PencilSvgIcon />}
           />
           <Setting
             title="Change Password"
             description="Update your account password."
-            href="/change-password"
+            href="/me/change-password"
             svg={<PencilSvgIcon />}
           />
         </SettingList>
