@@ -45,6 +45,7 @@ export default function EditProfilePage() {
         setError("Your email address has already been used or your password is invalid. If you are sure you entered the correct password, refresh the page and try again.");
         return;
       }
+      router.replace("/settings");    // TODO: Add notification
     } catch (e) {
         setError("Your email address has already been used or your password is invalid. If you are sure you entered the correct password, refresh the page and try again.");
       return;
