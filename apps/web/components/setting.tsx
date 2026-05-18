@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ReactElement } from "react";
 
 
-type SettingData = {
+type SettingProps = {
   title: string;
   description?: string;
   svg?: ReactElement;
@@ -12,18 +12,18 @@ type SettingData = {
 };
 
 
-export default function Setting(data: SettingData) {
+export default function Setting(props: SettingProps) {
   return (
     <li className="list-row">
       <div></div>
       <div>
-        <div>{data.title}</div>
-        <div className="text-xs font-semibold opacity-60">{ data.description ? data.description : "" }</div>
+        <div>{props.title}</div>
+        <div className="text-xs font-semibold opacity-60">{ props.description ? props.description : "" }</div>
       </div>
-      <Link className="btn btn-square btn-ghost" href={data.href}>
+      <Link className="btn btn-square btn-ghost" href={props.href}>
         {
-          data.svg
-          ? data.svg
+          props.svg
+          ? props.svg
           : (
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-[1.2em]">
                 <path
