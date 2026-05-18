@@ -1,6 +1,6 @@
 "use client";
 
-import XCircleSvgIcon from "../icons/x-circle-icon";
+import XCircleSvgIcon from "../icons/x-circle-svg-icon";
 
 type FormData = {
   children: React.ReactNode;
