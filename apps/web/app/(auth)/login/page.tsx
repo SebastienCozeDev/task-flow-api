@@ -26,11 +26,11 @@ export default function LoginPage() {
     try {
       const ok = await loginUser({ email, password });
       if (!ok) {
-        setError("Email ou mot de passe invalide.");
+        setError("Invalid email or password.");
         return;
       }
     } catch {
-      setError("Email ou mot de passe invalide.");
+      setError("Invalid email or password.");
       return;
     }
 

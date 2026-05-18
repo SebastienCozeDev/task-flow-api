@@ -1,26 +1,19 @@
-import Setting from "@/components/setting";
+import LogoutSvgIcon from "@/components/icons/logout-svg-icon";
+import PencilSvgIcon from "@/components/icons/pencil-svg-icon";
+import TrashSvgIcon from "@/components/icons/trash-svg-icon";
+import Setting from "@/components/settings/setting";
+import SettingList from "@/components/settings/setting-list";
 
 export default function SettingsPage() {
   return (
     <>
-      <main className="max-w-screen-lg mx-4 mx-auto w-full mb-16 lg:mt-16 lg:mb-32">
-        <ul className="list bg-base-100 rounded-box shadow-md">
-          <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
-            General Settings
-          </li>
+      <main className="max-w-screen-lg mx-4 mx-auto w-full mb-24 lg:mt-16 lg:mb-32 gap-6 flex flex-col">
+        <SettingList title="General Settings">
           <Setting
             title="Logout"
             description="Sign out of your account and end your current session."
             href="/logout"
-            svg={
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-[1.2em]">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
-                />
-              </svg>
-            }
+            svg={<LogoutSvgIcon />}
           />
           <Setting
             title="Terms of Use"
@@ -47,7 +40,29 @@ export default function SettingsPage() {
             description="View our disclaimer regarding service limitations and liabilities."
             href="/disclaimer"
           />
-        </ul>
+        </SettingList>
+        <SettingList title="Account Settings">
+          <Setting
+            title="Edit Profile"
+            description="Update your personal information and preferences."
+            href="/me/edit"
+            svg={<PencilSvgIcon />}
+          />
+          <Setting
+            title="Change Password"
+            description="Update your account password."
+            href="/me/change-password"
+            svg={<PencilSvgIcon />}
+          />
+        </SettingList>
+        <SettingList title="Danger Zone">
+          <Setting
+            title="Delete Account"
+            description="Permanently remove your account and all associated data."
+            href="/delete-account"
+            svg={<TrashSvgIcon />}
+          />
+        </SettingList>
       </main>
     </>
   );

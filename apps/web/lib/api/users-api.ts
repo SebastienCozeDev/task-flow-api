@@ -12,6 +12,15 @@ export type UserResponse = {
 
 
 
+export type UpdateUserRequest = {
+  displayName?: string;
+  email?: string;
+  password: string;
+  newPassword?: string;
+}
+
+
+
 /**
  * Get the current user from API.
  * @param token The access token
@@ -28,6 +37,6 @@ export async function getCurrentUser(token: string): Promise<UserResponse | null
  * @param token The access token
  * @returns The updated current user
  */
-export async function updateCurrentUser(data: RegisterRequest, token: string): Promise<UserResponse | null> {
+export async function updateCurrentUser(data: UpdateUserRequest, token: string): Promise<UserResponse | null> {
   return updateAPIEntity<UserResponse>("/users/me", data, token);
 }
