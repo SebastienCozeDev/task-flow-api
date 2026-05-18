@@ -90,12 +90,15 @@ services:
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
     container_name: taskflow-web-prod
     env_file:
       - .env
     environment:
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: 1
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
     depends_on:
       - api-prod
     networks:
