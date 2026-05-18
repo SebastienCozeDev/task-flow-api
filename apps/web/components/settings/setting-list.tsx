@@ -1,8 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { ReactElement } from "react";
-
 
 type SettingListProps = {
   title: string;
