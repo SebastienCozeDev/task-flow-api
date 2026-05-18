@@ -38,7 +38,7 @@ export default function RegisterPage() {
         return;
       }
     } catch (e) {
-        setError("Email invalide ou mot de passe trop court." + e);
+        setError("Email invalide ou mot de passe trop court.");
       return;
     }
 
