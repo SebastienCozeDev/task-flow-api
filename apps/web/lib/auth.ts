@@ -31,7 +31,7 @@ export async function registerUser(data: RegisterRequest): Promise<boolean> {
     const response = await register(data);
     
     if (!response?.displayName) {
-        removeAccessToken
+        removeAccessToken();
         return false
     }
 
