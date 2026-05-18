@@ -1,13 +1,11 @@
 import Setting from "@/components/settings/setting";
+import SettingList from "@/components/settings/setting-list";
 
 export default function SettingsPage() {
   return (
     <>
       <main className="max-w-screen-lg mx-4 mx-auto w-full mb-16 lg:mt-16 lg:mb-32">
-        <ul className="list bg-base-100 rounded-box shadow-md">
-          <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
-            General Settings
-          </li>
+        <SettingList title="General Settings">
           <Setting
             title="Logout"
             description="Sign out of your account and end your current session."
@@ -47,7 +45,7 @@ export default function SettingsPage() {
             description="View our disclaimer regarding service limitations and liabilities."
             href="/disclaimer"
           />
-        </ul>
+        </SettingList>
       </main>
     </>
   );
