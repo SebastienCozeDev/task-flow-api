@@ -4,7 +4,7 @@ import SettingList from "@/components/settings/setting-list";
 export default function SettingsPage() {
   return (
     <>
-      <main className="max-w-screen-lg mx-4 mx-auto w-full mb-16 lg:mt-16 lg:mb-32">
+      <main className="max-w-screen-lg mx-4 mx-auto w-full mb-24 lg:mt-16 lg:mb-32 gap-6 flex flex-col">
         <SettingList title="General Settings">
           <Setting
             title="Logout"
