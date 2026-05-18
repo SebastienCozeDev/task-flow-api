@@ -1,4 +1,5 @@
 import LogoutSvgIcon from "@/components/icons/logout-svg-icon";
+import PencilSvgIcon from "@/components/icons/pencil-svg-icon";
 import TrashSvgIcon from "@/components/icons/trash-svg-icon";
 import Setting from "@/components/settings/setting";
 import SettingList from "@/components/settings/setting-list";
@@ -45,11 +46,13 @@ export default function SettingsPage() {
             title="Edit Profile"
             description="Update your personal information and preferences."
             href="/edit-profile"
+            svg={<PencilSvgIcon />}
           />
           <Setting
             title="Change Password"
             description="Update your account password."
             href="/change-password"
+            svg={<PencilSvgIcon />}
           />
         </SettingList>
         <SettingList title="Danger Zone">
