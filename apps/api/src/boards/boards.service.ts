@@ -97,7 +97,7 @@ export class BoardsService {
             board = await this.findById(updateBoardDto.id);
         if (updateBoardDto.ownerId && !updateBoardDto.password)
             throw new ForbiddenException("You can't transfert this board without password");
-        if (updateBoardDto.password && !this.usersService.checkPassword(user, updateBoardDto.password))
+        if (updateBoardDto.password && !(await this.usersService.checkPassword(user, updateBoardDto.password)))
             throw new ForbiddenException("Invalid password");
         if (updateBoardDto.ownerId)
             throw new ForbiddenException("You can't transfert this board now (unimplemented feature)");
@@ -121,7 +121,7 @@ export class BoardsService {
             user = await this.usersService.findById(userId);
         if (!board)
             board = await this.findById(deleteBoardDto.id);
-        if (!this.usersService.checkPassword(user, deleteBoardDto.password))
+        if (!(await this.usersService.checkPassword(user, deleteBoardDto.password)))
             throw new ForbiddenException("Invalid password");
         if (!deleteBoardDto.permanently)
             await this.boardsRepository.softDelete(board.id);

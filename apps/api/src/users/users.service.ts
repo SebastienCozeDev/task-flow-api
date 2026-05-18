@@ -60,7 +60,7 @@ export class UsersService {
 
     async updateMe(userId: string, updateMeDto: UpdateMeDto): Promise<UserResponseDto> {
         const user = await this.findById(userId);
-        if (!this.checkPassword(user, updateMeDto.password))
+        if (!(await this.checkPassword(user, updateMeDto.password)))
             throw new UnauthorizedException("Invalid password");
         if (updateMeDto.email && updateMeDto.email !== user.email) {
             const existingUser = await this.usersRepository.findOneBy({
