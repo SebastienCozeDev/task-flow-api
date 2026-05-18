@@ -3,6 +3,8 @@ FROM node:24-slim AS build
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY nest-cli.json ./
+COPY tsconfig*.json ./
 COPY apps/api/package.json apps/api/package.json
 
 RUN npm ci
